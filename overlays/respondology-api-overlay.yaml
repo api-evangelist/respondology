@@ -1,0 +1,122 @@
+# Generated: 2026-08-26
+# method: generated
+# source: derived from openapi/respondology-api-openapi.json (verbatim upstream spec fetched
+#         from https://api.respondology.io/swagger.json). This Overlay captures API Evangelist
+#         enhancements only. It NEVER mutates the original contract.
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Respondology API
+  version: 1.0.0
+extends: ../openapi/respondology-api-openapi.json
+actions:
+  # ---- 1. The upstream spec declares no operationId on ANY of its 9 operations.
+  #         Without them, generated SDKs invent method names and no crosswalk can bind a tool.
+  - target: $.paths['/moderation_reasons'].get
+    update:
+      operationId: listModerationReasons
+  - target: $.paths['/external_api/v1/comments'].post
+    update:
+      operationId: submitComment
+  - target: $.paths['/external_api/v1/comments/{id}'].patch
+    update:
+      operationId: updateComment
+  - target: $.paths['/external_api/v1/comments/{id}'].get
+    update:
+      operationId: getComment
+  - target: $.paths['/external_api/v1/comments/{id}'].delete
+    update:
+      operationId: deleteComment
+  - target: $.paths['/external_api/v1/posts'].post
+    update:
+      operationId: submitPost
+  - target: $.paths['/external_api/v1/posts/{id}'].patch
+    update:
+      operationId: updatePost
+  - target: $.paths['/external_api/v1/posts/{id}'].get
+    update:
+      operationId: getPost
+  - target: $.paths['/external_api/v1/posts/{id}'].delete
+    update:
+      operationId: deletePost
+
+  # ---- 2. Authentication is modeled only as a repeated required header PARAMETER.
+  #         Declare it as a real securityScheme so tooling enforces it.
+  - target: $.components
+    update:
+      securitySchemes:
+        ApiKeyAuth:
+          type: apiKey
+          in: header
+          name: X-Api-Key
+          description: >-
+            API key issued by a Respondology account manager during onboarding.
+            Required on all /external_api/v1 operations.
+
+  # ---- 3. Apply that scheme to every authenticated operation.
+  - target: $.paths['/external_api/v1/comments'].post
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/comments/{id}'].patch
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/comments/{id}'].get
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/comments/{id}'].delete
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/posts'].post
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/posts/{id}'].patch
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/posts/{id}'].get
+    update:
+      security:
+        - ApiKeyAuth: []
+  - target: $.paths['/external_api/v1/posts/{id}'].delete
+    update:
+      security:
+        - ApiKeyAuth: []
+
+  # ---- 4. Record consequence/reversibility metadata for agent callers.
+  #         The two destructive operations are the ones an agent must not retry blindly.
+  - target: $.paths['/external_api/v1/comments/{id}'].delete
+    update:
+      x-agentic-access:
+        action-class: delete
+        consequence: destructive
+        reversible: unknown
+        note: >-
+          Accepted asynchronously (202) with no result webhook and no stated window. The contract does
+          not say whether deletion un-hides a comment already moderated on the source platform.
+  - target: $.paths['/external_api/v1/posts/{id}'].delete
+    update:
+      x-agentic-access:
+        action-class: delete
+        consequence: destructive
+        reversible: unknown
+        note: Accepted asynchronously (202) with no result webhook and no stated retention window.
+  - target: $.paths['/external_api/v1/comments'].post
+    update:
+      x-agentic-access:
+        action-class: create
+        consequence: moderating
+        idempotent: false
+        note: >-
+          No idempotency guard. A retry after timeout creates a second comment record with a new
+          comment_id and fires a second result webhook.
+  - target: $.paths['/external_api/v1/posts'].post
+    update:
+      x-agentic-access:
+        action-class: create
+        consequence: recording
+        idempotent: false
+        note: No idempotency guard; a retry after timeout creates a duplicate post record.

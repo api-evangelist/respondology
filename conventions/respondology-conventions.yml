@@ -1,0 +1,108 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — operations, parameters, responses, webhooks, and info.description
+api: respondology-api
+auth:
+  style: api-key header
+  header: X-Api-Key
+  see: authentication/respondology-authentication.yml
+base_url: https://webhooks.respondology.io/
+path_style:
+  prefix: /external_api/v1
+  note: Version is carried in the path. GET /moderation_reasons sits outside the versioned prefix.
+media_type: application/json
+idempotency:
+  supported: false
+  grade: absent
+  note: 'No Idempotency-Key header, no idempotency parameter, and no documented replay semantics on any
+    write operation. POST /external_api/v1/comments and POST /external_api/v1/posts are the two unguarded
+    write surfaces: a retried submission after a timeout will create a second comment/post record and
+    fire a second result webhook, with a different comment_id/request_id and no way for the caller to
+    detect the duplicate.'
+  evidence: No parameter matching /idempoten/i exists anywhere in the contract.
+pagination:
+  supported: false
+  na_reason: No list/collection endpoint exists. Every read is a single-resource GET by id.
+expansion:
+  supported: false
+metadata:
+  supported: true
+  field: custom
+  type: object (or string)
+  note: Free-form customer-supplied payload attached at submission and echoed back verbatim on every result
+    webhook — the intended correlation/tracking hook.
+request_tracing:
+  supported: true
+  field: request_id
+  note: Returned in the submission response body (not a header) and echoed on webhooks. Documented as
+    "recommended to store for future reference" for tracking and troubleshooting.
+  header: null
+versioning:
+  style: path
+  current: v1
+  see: lifecycle/respondology-lifecycle.yml
+error_envelope:
+  shape:
+    error: string
+  rfc9457: false
+  see: errors/respondology-problem-types.yml
+rate_limit_signaling:
+  documented: false
+  headers: []
+  status_on_exhaustion: null
+  note: No published limits and no 429 declared. See rate-limits/respondology-rate-limits.yml.
+async_model:
+  style: submit-then-webhook
+  note: Submissions return an acceptance (200/202) immediately; the moderation/analysis outcome arrives
+    later by webhook. Callers must not treat the 200 as the moderation decision.
+dry_run_mode:
+  supported: false
+  grade: absent
+  note: 'No test mode, sandbox flag, or simulate parameter is documented. The `moderate: false` flag on
+    a comment submission causes the comment to be recorded and analyzed WITHOUT a moderation action —
+    the closest thing to a non-acting call, but it is a product mode, not a rehearsal of a moderating
+    call.'
+reversibility:
+  grade: documented
+  applicable: true
+  note: The API has write surfaces (submit/update/delete for comments and posts), and each has a reversal
+    or correction path published in the contract. No reversal WINDOW is stated anywhere in the docs, so
+    this grades `documented` rather than `verified`.
+  surfaces:
+  - write: POST /external_api/v1/comments
+    operation_id: null
+    action: submit a comment for moderation
+    reversal: DELETE /external_api/v1/comments/{id}
+    reversal_operation_id: null
+    window: null
+    window_source: null
+    note: Delete is accepted asynchronously (202). The contract does not state whether deleting after
+      a moderation decision reverses a hide already applied on the social platform, nor any time limit.
+  - write: PATCH /external_api/v1/comments/{id}
+    action: update a previously submitted comment
+    reversal: PATCH /external_api/v1/comments/{id}
+    window: null
+    note: 'An update is itself the correction path — resubmitting the prior message restores prior state,
+      and re-moderation fires a comment_update_result webhook. Not a true undo: the intermediate moderation
+      decision is not rolled back.'
+  - write: POST /external_api/v1/posts
+    action: submit a post for analysis/recording
+    reversal: DELETE /external_api/v1/posts/{id}
+    window: null
+    note: Accepted asynchronously (202). No stated retention or deletion window.
+  - write: PATCH /external_api/v1/posts/{id}
+    action: update a previously submitted post
+    reversal: PATCH /external_api/v1/posts/{id}
+    window: null
+  gaps:
+  - No reversal window is stated for any operation — an agent cannot know how long a delete remains possible.
+  - DELETE returns 202 (accepted) with no result webhook declared, so there is no documented confirmation
+    that a deletion actually completed.
+  - Whether DELETE un-hides a comment already moderated on the source platform is not documented — the
+    most consequential unanswered reversibility question in this API.
+cross_links:
+  errors: errors/respondology-problem-types.yml
+  lifecycle: lifecycle/respondology-lifecycle.yml
+  authentication: authentication/respondology-authentication.yml
+  rate_limits: rate-limits/respondology-rate-limits.yml
+  webhooks: asyncapi/respondology-webhooks.yml

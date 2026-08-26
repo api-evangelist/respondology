@@ -1,0 +1,197 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — OpenAPI 3.1 top-level webhooks object (6 definitions)
+api: respondology-api
+asyncapi_spec_published: false
+note: Respondology publishes no AsyncAPI document. Its event surface is declared natively as an OpenAPI
+  3.1 `webhooks` object, which is a first-class machine-readable event contract — captured here verbatim
+  in structure.
+transport: HTTPS POST from Respondology to a customer-configured endpoint
+delivery:
+  style: asynchronous callback
+  subscription_management: Not self-service. The result endpoint is configured during onboarding; changes
+    go through the Respondology account manager (support@respondology.com).
+  expected_response: 200 OK
+  retry_policy: If a 200 OK is not received, result sending is retried for 72 hours with exponential backoff.
+  ordering: not documented
+  signature_verification: not documented in the contract
+correlation:
+  field: request_id
+  note: Returned on the synchronous submission response and echoed on every webhook; also comment_id /
+    post_id.
+event_count: 6
+events:
+- name: comment_result
+  summary: Comment result webhook
+  group: Comment Results
+  description: Payload sent to your endpoint when moderation is completed for a submitted comment, or
+    when the comment has been recorded if moderation is not requested.
+  required:
+  - action
+  - comment_id
+  - account_id
+  - screen_name
+  - message
+  - language
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  properties:
+  - action
+  - comment_id
+  - account_id
+  - screen_name
+  - message
+  - language
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  - moderation_completed_at
+  - moderation_result
+  - moderation_reasons
+  expected_response: Your server should return a 200 OK result when it successfully processes the webhook.
+    If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+- name: comment_update_result
+  summary: Comment update result webhook
+  group: Comment Results
+  description: Payload sent to your endpoint when moderation is completed for an updated comment, or when
+    the comment update has been recorded if moderation is not requested.
+  required:
+  - action
+  - comment_id
+  - account_id
+  - screen_name
+  - message
+  - language
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  properties:
+  - action
+  - comment_id
+  - account_id
+  - screen_name
+  - message
+  - language
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  - moderation_completed_at
+  - moderation_result
+  - moderation_reasons
+  expected_response: Your server should return a 200 OK result when it successfully processes the webhook.
+    If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+- name: comment_error_result
+  summary: Comment error result webhook
+  group: Comment Results
+  description: Payload sent to your endpoint when an error occurs during processing or moderation for
+    a submitted or updated comment.
+  required:
+  - action
+  - comment_id
+  - account_id
+  - screen_name
+  - message
+  - custom
+  - error
+  - request_id
+  properties:
+  - action
+  - comment_id
+  - account_id
+  - screen_name
+  - comment_message
+  - custom
+  - error
+  - request_id
+  expected_response: Your server should return a 200 OK result when it successfully processes the webhook.
+    If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+- name: post_result
+  summary: Post result webhook
+  group: Post Results
+  description: Payload sent to your endpoint when the post has been recorded.
+  required:
+  - action
+  - post_id
+  - account_id
+  - screen_name
+  - title
+  - caption
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  properties:
+  - action
+  - post_id
+  - account_id
+  - screen_name
+  - title
+  - caption
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  expected_response: Your server should return a 200 OK result when it successfully processes the webhook.
+    If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+- name: post_update_result
+  summary: Post update result webhook
+  group: Post Results
+  description: Payload sent to your endpoint when the post has been updated.
+  required:
+  - action
+  - post_id
+  - account_id
+  - screen_name
+  - title
+  - caption
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  properties:
+  - action
+  - post_id
+  - account_id
+  - screen_name
+  - title
+  - caption
+  - custom
+  - webhook_sending_initiated_at
+  - request_id
+  expected_response: Your server should return a 200 OK result when it successfully processes the webhook.
+    If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+- name: post_error_result
+  summary: Post error result webhook
+  group: Post Results
+  description: Payload sent to your endpoint when processing error occurs during processing for a submitted
+    or updated post.
+  required:
+  - action
+  - post_id
+  - account_id
+  - screen_name
+  - message
+  - post_title
+  - post_caption
+  - custom
+  - error
+  - request_id
+  properties:
+  - action
+  - post_id
+  - account_id
+  - screen_name
+  - post_title
+  - post_caption
+  - custom
+  - error
+  - request_id
+  expected_response: Your server should return a 200 OK result when it successfully processes the webhook.
+    If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+findings:
+- comment_error_result lists `message` as required but its properties declare `comment_message` — a required
+  field that does not exist in the schema.
+- post_error_result lists `message` as required but no `message` property is declared (only post_title
+  / post_caption).
+- No webhook signing/HMAC scheme is documented, so a receiver cannot verify a callback actually came from
+  Respondology.
+- No AsyncAPI document is published; consumers wanting an event-broker toolchain must convert the OpenAPI
+  webhooks object themselves.

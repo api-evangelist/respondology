@@ -1,0 +1,143 @@
+generated: '2026-08-26'
+method: probed
+source: direct HTTPS probes of every apis.yml and OpenAPI servers[] host
+summary: No /.well-known document is served on any Respondology host. No WellKnown or SecurityTxt pointer
+  is emitted — every path either 404s, is blocked by a bot challenge, or returns a single-page-app HTML
+  shell.
+hosts:
+- host: respondology.com
+  note: All paths return HTTP 202 with a SiteGround sgcaptcha JS interstitial (169-209 byte HTML). Indistinguishable
+    served-vs-absent from an automated client; treated as NOT a document.
+  documents:
+  - path: /.well-known/security.txt
+    status: 202
+    file: null
+    result: bot-challenge interstitial, not a document
+  - path: /.well-known/openid-configuration
+    status: 202
+    file: null
+    result: bot-challenge interstitial, not a document
+  - path: /.well-known/oauth-authorization-server
+    status: 202
+    file: null
+    result: bot-challenge interstitial, not a document
+  - path: /.well-known/api-catalog
+    status: 202
+    file: null
+    result: bot-challenge interstitial, not a document
+  - path: /.well-known/ai-plugin.json
+    status: 202
+    file: null
+    result: bot-challenge interstitial, not a document
+  - path: /.well-known/agent-card.json
+    status: 202
+    file: null
+    result: bot-challenge interstitial, not a document
+- host: webhooks.respondology.io
+  note: Declared servers[] host. Clean JSON 404s — an unambiguous negative.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: api.respondology.io
+  note: Host serving the OpenAPI. Clean JSON 404s.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: app.respondology.io
+  note: 'FALSE POSITIVE GUARD: this SPA answers HTTP 200 with an identical 847-byte HTML shell for EVERY
+    /.well-known/* path and for /llms.txt. None of these are documents; all recorded as misses.'
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+  - path: /.well-known/api-catalog
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+  - path: /.well-known/agent.json
+    status: 200
+    file: null
+    result: HTML SPA shell (847 bytes) — not a document
+- host: v2.app.respondology.io
+  note: Current app host. Returns HTTP 404 with an HTML shell.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+findings:
+- No security.txt anywhere, so there is no machine-discoverable vulnerability-reporting address despite
+  a SOC 2 posture advertised on the trust center.
+- No agent card on any host (both the 0.3 and legacy paths were probed) — no A2A artifact is written.

@@ -1,0 +1,58 @@
+generated: '2026-08-26'
+method: searched
+source: https://respondology.com/pricing/
+source_note: respondology.com serves an identical HTTP 202 SiteGround JS-captcha interstitial to automated
+  clients on every path, so the page was read through the public search index rather than fetched directly.
+  Figures below are the published list prices as indexed.
+currency: USD
+billing_period: annual
+billing_note: All plans are billed annually; the Software as a Service Agreement states Respondology invoices
+  annually in advance, net 30, fees non-refundable.
+self_service_signup: false
+signup_note: List prices are published, but there is no self-service purchase or trial. A sales call is
+  required before access, and API keys are issued by an account manager during onboarding.
+plan_count: 3
+plans:
+- name: Moderate
+  price: 1500
+  price_qualifier: starting at
+  currency: USD
+  period: month
+  billed: annually
+  description: Social media comment moderation — hides brand-damaging, spam, and toxic comments in under
+    a second across 100+ languages.
+  included_quota: scoped by number and size of social assets covered
+  overage: not published
+- name: Respond
+  price: 1500
+  price_qualifier: starting at
+  currency: USD
+  period: month
+  billed: annually
+  description: AI social engagement — unified inbox for paid and organic comments with AI agents replying
+    in brand voice.
+  prerequisite: Moderate is required to use Respond.
+  included_quota: scoped by number and size of social assets covered
+  overage: not published
+- name: Discover
+  price: 1000
+  price_qualifier: starting at
+  currency: USD
+  period: month
+  billed: annually
+  description: Social listening — pulls comment data from any public handle for AI sentiment, theme tracking,
+    and trend summaries.
+  included_quota: not published
+  overage: not published
+price_drivers:
+- number of social assets covered (organic and/or paid accounts)
+- size of those assets/ad accounts (follower count and estimated annual paid media spend)
+- package tier selected
+api_access:
+  priced_separately: false
+  note: The external API is not sold as its own line item. It is an integration path into the platform
+    above; keys are provisioned during onboarding. No per-call, per-comment, or per-request price is published.
+findings:
+- Entry price is published and unusually transparent for this category, but every limit attached to a
+  tier (asset counts, comment volume, API call ceilings) is quoted rather than published, so a buyer cannot
+  size the cost of an API integration from public information.

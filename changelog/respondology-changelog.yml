@@ -1,0 +1,21 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — tags[] entry named "Changelog" (the only changelog
+  Respondology publishes)
+api: respondology-api
+location: embedded in the OpenAPI as a tag description; there is no standalone changelog page or feed
+scheme: dated entries
+current_version: v1
+entry_count: 1
+entries:
+- date: '2025-11-18'
+  version: v1
+  breaking: false
+  highlights:
+  - V1 of the API completed, initial documentation created
+  verbatim: V1 of the API completed, initial documentation created
+findings:
+- A single entry covering initial publication. The API has recorded no documented change in the ~9 months
+  since 2025-11-18.
+- The changelog is not separately addressable — it can only be read by parsing the OpenAPI, so it is invisible
+  to a human browsing for release notes and to any feed reader.

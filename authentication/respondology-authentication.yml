@@ -1,0 +1,42 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — X-Api-Key header parameter on every operation + info.description
+  onboarding text
+api: respondology-api
+summary: API-key authentication via a required X-Api-Key request header. Keys are issued by a Respondology
+  account manager during onboarding; there is no self-service key provisioning.
+schemes:
+- id: api_key_header
+  type: apiKey
+  in: header
+  name: X-Api-Key
+  required: true
+  applies_to: all 8 external_api operations (comments and posts); GET /moderation_reasons declares no
+    key
+  description: API key issued during onboarding. The OpenAPI declares it as a required header PARAMETER
+    on each operation rather than as a components.securitySchemes entry.
+  unauthorized_response:
+    status: 401
+    body:
+      error: API key not found
+oauth2: false
+openid_connect: false
+mutual_tls: false
+scopes: false
+provisioning:
+  self_service: false
+  method: contact Respondology to set up an account and receive an API key and secret
+  source: OpenAPI info.description Getting Started section
+  contact: support@respondology.com
+findings:
+- The spec declares NO components.securitySchemes and no top-level or per-operation security[] block.
+  Auth is modeled only as a required X-Api-Key header parameter, so generated clients will not treat it
+  as a security requirement.
+- info.description states onboarding issues "your API key and secret", but only the key (X-Api-Key) appears
+  anywhere in the contract. The secret has no documented use, header, or signing scheme in the published
+  spec.
+recommendations:
+- Declare an apiKey securityScheme in components.securitySchemes and reference it from security[] so tooling
+  enforces it.
+- Document what the issued secret is for (webhook signature verification is the likely intent) or remove
+  it from the onboarding text.

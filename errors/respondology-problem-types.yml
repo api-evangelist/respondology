@@ -1,0 +1,55 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — 4xx responses across all operations
+api: respondology-api
+format: proprietary
+rfc9457: false
+envelope:
+  media_type: application/json
+  shape:
+    error: string
+  note: 'A flat single-field object. Not RFC 9457 problem+json: no type, title, status, detail, or instance
+    members, and no machine-readable error code to branch on.'
+problem_types:
+- status: 400
+  name: missing_required_parameters
+  title: missing required parameters
+  example:
+    error: 'param is missing or the value is empty: account_id'
+  operations:
+  - POST /external_api/v1/comments
+  - PATCH /external_api/v1/comments/{id}
+  - POST /external_api/v1/posts
+  - PATCH /external_api/v1/posts/{id}
+  remediation: Supply the named required field. The offending parameter is embedded in the error prose,
+    not returned as a separate field.
+- status: 401
+  name: unauthorized
+  title: unauthorized
+  example:
+    error: API key not found
+  operations:
+  - all 8 external_api operations
+  remediation: Send a valid X-Api-Key header. Keys are issued by a Respondology account manager.
+- status: 404
+  name: not_found
+  title: comment or post not found
+  example:
+    error: post not found
+  operations:
+  - GET /external_api/v1/comments/{id}
+  - GET /external_api/v1/posts/{id}
+  remediation: Verify the id returned at submission time. Note DELETE returns 202 and does not declare
+    a 404.
+async_errors:
+  note: Processing failures are not returned on the HTTP call. They arrive asynchronously on the comment_error_result
+    and post_error_result webhooks.
+  webhooks:
+  - comment_error_result
+  - post_error_result
+findings:
+- No 5xx responses are declared anywhere in the contract, so agents have no documented server-failure
+  contract and no documented retry signal.
+- No 429 / rate-limit response is declared on any operation.
+- Errors carry no stable machine-readable code; branching requires string-matching English prose, which
+  is not a safe integration surface.

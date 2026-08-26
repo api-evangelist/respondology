@@ -1,0 +1,19 @@
+generated: '2026-08-26'
+method: searched
+source: https://api.respondology.io/swagger.json (full contract review) and https://respondology.com/pricing/
+api: respondology-api
+limit_count: 0
+limits: []
+documented: false
+response_headers: []
+status_on_exhaustion: null
+note: Respondology publishes no rate limits. The OpenAPI declares no 429 response on any of the 9 operations,
+  no X-RateLimit-* / RateLimit-* / Retry-After headers appear anywhere in the contract, and neither the
+  pricing page nor the onboarding text states a throughput ceiling. Volume appears to be governed commercially
+  per contracted asset rather than by a published technical limit.
+findings:
+- 'An honest zero: no published limits and no runtime signal. An agent submitting comments at volume has
+  no documented way to learn it is approaching a ceiling, and no documented backoff contract if it hits
+  one.'
+- The only published retry/backoff semantics in the whole API run the other direction — Respondology retrying
+  webhook delivery to the customer for 72 hours with exponential backoff.

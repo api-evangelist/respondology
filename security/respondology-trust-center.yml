@@ -1,0 +1,15 @@
+generated: '2026-08-26'
+method: searched
+probe: true
+source: https://trust.respondology.com/
+url: https://trust.respondology.com/
+certifications:
+- SOC 2
+- GDPR
+evidence:
+- source: https://trust.respondology.com/
+  keywords:
+  - soc 2
+  - trust center
+  - compliance certification
+  - gdpr

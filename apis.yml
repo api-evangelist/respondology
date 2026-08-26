@@ -1,23 +1,114 @@
 aid: respondology
 name: Respondology
-description: 'Respondology is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Respondology is a Boulder, Colorado social media Comment Activation Platform that helps brands moderate,
+  analyze, and activate the conversations happening in their comment sections. Its three products share one
+  platform: Moderate hides brand-damaging, spam, and toxic comments in under a second using keyphrase and
+  business rules, generative AI, and human moderators across 100+ languages; Respond centralizes paid and
+  organic social comments into a unified inbox and uses AI agents to reply in the brand voice; and Discover
+  pulls comment data from any public handle for sentiment, theme, and trend analysis. Respondology publishes
+  a public OpenAPI 3.1 contract for its external moderation API, letting customers submit posts and comments
+  for moderation and analysis and receive results asynchronously over webhooks.
+image: https://avatars.githubusercontent.com/u/143194429?v=4
 url: https://raw.githubusercontent.com/api-evangelist/respondology/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-apis: []
+- Content Moderation
+- Social Media
+- Comment Moderation
+- Trust and Safety
+- Artificial Intelligence
+- Brand Protection
+- Social Listening
+- Webhooks
+- Marketing
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: respondology-api
+  name: Respondology API
+  description: >-
+    The Respondology external API accepts posts and comments for moderation and analysis and returns results
+    asynchronously over customer-configured webhooks. Nine REST operations cover submitting, updating,
+    retrieving, and deleting comments and posts, plus a reference table of moderation rejection reasons. Six
+    OpenAPI 3.1 webhook definitions describe the comment and post result, update, and error callbacks.
+    Authentication is an X-Api-Key header issued during onboarding by a Respondology account manager.
+  humanURL: https://respondology.com/product/
+  baseURL: https://webhooks.respondology.io/
+  tags:
+  - Comments
+  - Posts
+  - Moderation
+  - Webhooks
+  - Content Moderation
+  properties:
+  - type: OpenAPI
+    url: openapi/respondology-api-openapi.json
+  - type: APIReference
+    url: https://api.respondology.io/swagger.json
+  - type: Webhooks
+    url: asyncapi/respondology-webhooks.yml
+  - type: Authentication
+    url: authentication/respondology-authentication.yml
+  - type: ErrorCatalog
+    url: errors/respondology-problem-types.yml
+  - type: DataModel
+    url: data-model/respondology-data-model.yml
+  - type: Conventions
+    url: conventions/respondology-conventions.yml
+  - type: Vocabulary
+    url: vocabulary/respondology-moderation-reasons.yml
+  - type: Conformance
+    url: conformance/respondology-conformance.yml
 common:
+- type: Overlay
+  url: overlays/respondology-api-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: TrustCenter
+  url: security/respondology-trust-center.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://respondology.com/
+- type: Pricing
+  url: https://respondology.com/pricing/
+- type: TermsOfService
+  url: https://respondology.com/terms-of-service
+- type: PrivacyPolicy
+  url: https://respondology.com/privacy/
+- type: Support
+  url: https://respondology.com/company/contact-us/
+- type: Blog
+  url: https://respondology.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/respondology
+- type: Login
+  url: https://v2.app.respondology.io/
+- type: Compliance
+  url: https://trust.respondology.com/
+- type: Lifecycle
+  url: lifecycle/respondology-lifecycle.yml
+- type: ChangeLog
+  url: changelog/respondology-changelog.yml
+- type: Packages
+  url: packages/respondology-packages.yml
+- type: LLMsTxt
+  url: llms/respondology-llms.txt
+- type: DomainSecurity
+  url: security/respondology-domain-security.yml
+- type: Plans
+  url: plans/respondology-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/respondology-rate-limits.yml
+x-enrichment:
+  date: '2026-08-26'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1

@@ -1,0 +1,116 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — request/response/webhook schemas (spec declares no
+  components.schemas; entities inferred from inline shapes)
+api: respondology-api
+note: The spec inlines every schema and publishes an empty components object, so there are no $ref links
+  to walk. Relationships below are derived from id-reference FIELDS.
+entities:
+- name: Account
+  id_field: account_id
+  description: The Respondology account (asset) content is associated with. Required on every submission;
+    moderation settings are configured per account in Moderate.
+  source: request field account_id
+- name: Post
+  id_field: id / post_id
+  description: A social post submitted for analysis and recording.
+  fields:
+  - account_id
+  - caption
+  - title
+  - posted_at
+  - post_permalink
+  - custom
+  - media
+  - user
+- name: Comment
+  id_field: id / comment_id
+  description: A comment submitted for moderation and/or analysis.
+  fields:
+  - account_id
+  - message
+  - moderate
+  - posted_at
+  - post_id
+  - post_created_at
+  - parent_comment_id
+  - comment_permalink
+  - custom
+  - media
+  - message_tags
+  - user
+- name: User
+  id_field: user.id
+  description: The commenting or posting end user on the customer site. Embedded, not addressable — no
+    standalone user endpoint.
+  fields:
+  - id
+  - screen_name
+  - display_name
+  - avatar_url
+  - owner
+  - bio
+  - created_at
+  - profile_link
+  - additional_data
+- name: MessageTag
+  description: Mention/hashtag entity span inside a comment message.
+  fields:
+  - start
+  - length
+  - content
+- name: ModerationResult
+  description: Asynchronous moderation/analysis outcome delivered by webhook.
+  fields:
+  - action
+  - moderation_result
+  - moderation_reasons
+  - language
+  - moderation_completed_at
+  - request_id
+relationships:
+- from: Comment
+  to: Account
+  type: belongs_to
+  via: account_id
+- from: Post
+  to: Account
+  type: belongs_to
+  via: account_id
+- from: Comment
+  to: Post
+  type: belongs_to
+  via: post_id
+- from: Comment
+  to: Comment
+  type: belongs_to
+  via: parent_comment_id
+  note: self-reference for replies
+- from: Comment
+  to: User
+  type: has_one
+  via: user (embedded object)
+- from: Post
+  to: User
+  type: has_one
+  via: user (embedded object)
+- from: Comment
+  to: MessageTag
+  type: has_many
+  via: message_tags[]
+- from: Comment
+  to: ModerationResult
+  type: has_one
+  via: comment_result webhook keyed on comment_id
+- from: Post
+  to: ModerationResult
+  type: has_one
+  via: post_result webhook keyed on post_id
+correlation:
+  request_id: Returned on submission and echoed on every webhook; the join key between the sync call and
+    the async result.
+  ids: comment_id / post_id are opaque numeric strings (e.g. 45305901000853414072). No typed id prefixes
+    are used.
+findings:
+- components.schemas is empty — every shape is inlined and duplicated across paths and webhooks, so there
+  is no reusable model and no $ref graph.

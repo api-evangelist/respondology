@@ -1,0 +1,39 @@
+generated: '2026-08-26'
+method: generated
+source: >-
+  Authored from openapi/respondology-api-openapi.json (fetched verbatim from
+  https://api.respondology.io/swagger.json) plus conventions/, errors/ and asyncapi/ in this repository.
+  Respondology publishes no skills or AGENTS.md of its own; searched respondology.com, the
+  github.com/respondology organization (0 public repos), and every API host.
+api: respondology-api
+skill_count: 3
+skills:
+- name: respondology-moderate-a-comment
+  file: respondology-moderate-a-comment.md
+  description: Submit a comment for moderation and handle the asynchronous result webhook, including the duplicate-submission risk.
+  operations:
+  - POST /external_api/v1/comments
+  - GET /external_api/v1/comments/{id}
+  - DELETE /external_api/v1/comments/{id}
+- name: respondology-submit-a-post
+  file: respondology-submit-a-post.md
+  description: Register a social post so its comments are analyzed in context, and handle the post result webhook.
+  operations:
+  - POST /external_api/v1/posts
+  - PATCH /external_api/v1/posts/{id}
+  - GET /external_api/v1/posts/{id}
+  - DELETE /external_api/v1/posts/{id}
+- name: respondology-handle-result-webhooks
+  file: respondology-handle-result-webhooks.md
+  description: Build a correct receiver for all six result webhooks — correlation, retry pressure, and the unverified-sender gap.
+  operations:
+  - webhook comment_result
+  - webhook comment_update_result
+  - webhook comment_error_result
+  - webhook post_result
+  - webhook post_update_result
+  - webhook post_error_result
+note: >-
+  Every operation named in these skills was verified against the published contract. The API declares no
+  operationIds, so skills reference METHOD + PATH; overlays/respondology-api-overlay.yaml assigns
+  operationIds for tooling that needs them.

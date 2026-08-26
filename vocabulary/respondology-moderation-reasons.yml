@@ -1,0 +1,90 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — GET /moderation_reasons operation description (markdown
+  table published in the OpenAPI)
+name: Respondology Moderation Rejection Reasons
+description: The controlled vocabulary Respondology returns in the moderation_reasons array when a comment
+  is rejected. Values match the reasons shown in the Moderate UI; strictness for many is tunable per account
+  in Moderate settings.
+term_count: 38
+terms:
+- term: Ableism
+  description: The comment contains discriminatory content based on physical or mental disabilities.
+- term: Ageism
+  description: The comment contains discriminatory content based on age.
+- term: Antireligion
+  description: The comment contains discriminatory content based on religion.
+- term: Availabilty
+  description: The comment is expressing concern over the availability of the product, service, or membership.
+- term: Body Shaming
+  description: The comment contains discriminatory content based on the appearance of a person's body.
+- term: Brand Damage
+  description: The comment contains damaging commentary towards the brand or organization.
+- term: Cancellation/Returns
+  description: The comment is expressing a desire to cancel or return the product, service, or membership.
+- term: Comment is Too Long
+  description: The comment is too long.
+- term: Competitor Comparisons
+  description: The comment is mentioning a competitor to the organization, brand, or product.
+- term: Contains Image or Video
+  description: The comment contains an attached image or video.
+- term: Contains URLs
+  description: The comment contains one or more URLs.
+- term: Controversial Subjects
+  description: The comment contains controversial subjects.
+- term: Custom Phrase
+  description: The comment contains a custom phrase.
+- term: Customer Service Quality
+  description: The comment is expressing a complaint related to quality of customer service the commenter
+    is receiving.
+- term: Drug References
+  description: The comment contains references to illicit drugs or paraphernalia.
+- term: Homophobia
+  description: The comment contains discriminatory content based on sexual orientation.
+- term: Instant Commenter Hide
+  description: The commenter commented too soon after post creation, indicating they are likely a bot.
+- term: LGBTQ Slurs
+  description: The comment contains slurs directed towards the LGBTQ+ community.
+- term: Mild Swearing
+  description: The comment contains mild swearing.
+- term: Personal Attacks
+  description: The comment contains a personal attack towards another commenter.
+- term: Political References
+  description: The comment contains political references.
+- term: Pricing Sensitivity
+  description: The comment is expressing sensitivity towards the price of the product, service, or membership.
+- term: Pride Month
+  description: The comment is expressing a negative opinion related to Pride Month.
+- term: Product Quality
+  description: The comment is expressing concern over the quality or capability of the product, service,
+    or membership.
+- term: Racism
+  description: The comment contains discriminatory content based on race.
+- term: Self-Harm
+  description: The comment contains a threat of violence towards oneself.
+- term: Severe Swearing
+  description: The comment contains severe swearing.
+- term: Sexism
+  description: The comment contains discriminatory content based on sex or gender.
+- term: Sexual References
+  description: The comment contains sexual references.
+- term: Shipping Complaints
+  description: The comment is expressing a complaint related to the shipment of the product.
+- term: Short Spam Comment
+  description: The commenter commented with a short messsage length too soon after post creation, indicating
+    they are likely a bot.
+- term: Spam
+  description: The comment contains irrelevant content for the purposes of advertising, phishing, and
+    self-promotion.
+- term: Spam Profile
+  description: The commenter profile is being used to spam.
+- term: Threat
+  description: The comment contains a threat of violence towards an individual, organization, or location.
+- term: Temporary User Hide
+  description: The commenter is currently blocked due to recent rejected comments.
+- term: Transphobia
+  description: The comment contains discriminatory content based on transgenderism.
+- term: Trending Topics
+  description: The comment contains references to trending topics.
+- term: Website App Link Issues/Outages
+  description: The comment is mentioning an outage of a website or app.

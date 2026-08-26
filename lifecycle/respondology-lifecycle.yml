@@ -1,0 +1,42 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json — info.version, path prefix, and the Changelog tag description
+api: respondology-api
+versioning:
+  scheme: path
+  current_version: v1
+  path_prefix: /external_api/v1
+  info_version: v1
+  policy_published: false
+  note: No written versioning policy — no statement of how a v2 would be introduced, how long v1 is supported,
+    or whether breaking changes can land inside v1.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: 'No operation, parameter, or schema in the contract carries `deprecated: true`, and no deprecation
+    or sunset policy is published.'
+status_page:
+  published: false
+  probed:
+  - https://status.respondology.com/
+  - https://status.respondology.io/
+  result: no response / no status host resolves
+  note: No public status page found. Uptime and incident communication appear to run through the account
+    manager.
+sla:
+  published: false
+  note: No public SLA. Commercial terms live in the Software as a Service Agreement at https://respondology.com/terms-of-service,
+    which is not a machine-readable availability commitment.
+support:
+  channel: account manager / support@respondology.com
+  contact_page: https://respondology.com/company/contact-us/
+webhook_retention:
+  retry_window: 72 hours with exponential backoff
+  source: webhook response descriptions in the OpenAPI
+findings:
+- No status page, no SLA, no deprecation policy, and no versioning policy — the operational-maturity surface
+  is effectively unpublished for a v1 API first documented 2025-11-18.
+- The only dated lifecycle signal Respondology publishes is the Changelog tag inside the OpenAPI itself.

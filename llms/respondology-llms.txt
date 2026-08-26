@@ -1,0 +1,92 @@
+# Respondology
+
+> Respondology is a Boulder, Colorado social media Comment Activation Platform. It moderates, analyzes,
+> and activates brand comment sections — hiding brand-damaging, spam, and toxic comments in under a
+> second across 100+ languages, then routing the meaningful ones to AI agents that reply in brand voice.
+
+Generated: 2026-08-26
+Method: generated (no /llms.txt is published by Respondology on any host)
+Source: openapi/respondology-api-openapi.json (fetched from https://api.respondology.io/swagger.json)
+        plus apis.yml and the artifacts in this repository.
+
+## What the API does
+
+Respondology publishes one public REST API, the Respondology external API. It is a **submit-then-webhook**
+contract: you POST a comment or post, receive an immediate acceptance containing a `comment_id`/`post_id`
+and a `request_id`, and the moderation or analysis result arrives later as an HTTPS callback to an endpoint
+configured for you during onboarding. The synchronous 200 is an acknowledgement, never a decision.
+
+- Base URL: https://webhooks.respondology.io/
+- OpenAPI 3.1: https://api.respondology.io/swagger.json
+- Auth: `X-Api-Key` request header, issued by a Respondology account manager. No self-service signup.
+- Versioning: path-based, `/external_api/v1`
+
+## Operations
+
+- POST   /external_api/v1/comments       Submit a comment for moderation or analysis
+- PATCH  /external_api/v1/comments/{id}  Update a previously submitted comment
+- GET    /external_api/v1/comments/{id}  Check the current status of a comment
+- DELETE /external_api/v1/comments/{id}  Delete a previously submitted comment
+- POST   /external_api/v1/posts          Submit a post for moderation or analysis
+- PATCH  /external_api/v1/posts/{id}     Update a previously submitted post
+- GET    /external_api/v1/posts/{id}     Check the current status of a post
+- DELETE /external_api/v1/posts/{id}     Delete a previously submitted post
+- GET    /moderation_reasons             Table of moderation rejection reasons
+  (documented in the contract but returns 404 live; the table is published as markdown inside the OpenAPI)
+
+## Webhooks (OpenAPI 3.1 webhooks object, 6 events)
+
+- comment_result         Moderation completed, or comment recorded when moderation was not requested
+- comment_update_result  Moderation completed for an updated comment
+- comment_error_result   Error during comment processing or moderation
+- post_result            Post recorded
+- post_update_result     Post updated
+- post_error_result      Error during post processing
+
+Your endpoint must return 200 OK. If it does not, Respondology retries for 72 hours with exponential
+backoff. No webhook signing scheme is documented.
+
+## Things an agent must know before calling this API
+
+- **No idempotency.** There is no Idempotency-Key on either POST. Retrying a submission after a timeout
+  creates a second record with a new id and fires a second webhook. There is no way to detect the duplicate.
+- **No rate limits are published.** No 429 is declared, and no RateLimit-*/Retry-After headers exist.
+- **Errors are prose.** The envelope is a flat {"error": "<english string>"} with no machine-readable code
+  and no RFC 9457 problem+json. Do not branch on error text.
+- **No 5xx is declared** anywhere in the contract, so there is no documented server-failure or retry contract.
+- **Deletes are unconfirmed.** DELETE returns 202 with no result webhook and no stated window, and the docs
+  do not say whether deleting reverses a hide already applied on the source platform.
+- **Correlate on `request_id`**, returned at submission and echoed on every webhook.
+- **Use the `custom` field** to carry your own tracking payload; it is echoed back verbatim.
+
+## Repository artifacts
+
+- openapi/respondology-api-openapi.json            OpenAPI 3.1 contract (verbatim)
+- overlays/respondology-api-overlay.yaml           Our enhancements (operationIds, securityScheme)
+- authentication/respondology-authentication.yml   Auth profile
+- asyncapi/respondology-webhooks.yml               Webhook/event catalog
+- errors/respondology-problem-types.yml            Error catalog
+- data-model/respondology-data-model.yml           Entity graph
+- conventions/respondology-conventions.yml         Cross-cutting semantics + reversibility
+- vocabulary/respondology-moderation-reasons.yml   38-term moderation rejection vocabulary
+- conformance/respondology-conformance.yml         Standards conformance
+- lifecycle/respondology-lifecycle.yml             Versioning / deprecation / status
+- changelog/respondology-changelog.yml             Published changelog
+- plans/respondology-plans-pricing.yml             Published pricing
+- rate-limits/respondology-rate-limits.yml         Rate limits (none published)
+- packages/respondology-packages.yml               Client libraries (none published)
+- security/                                        Domain security + trust center
+- skills/                                          Agent Skills for the marquee flows
+
+## Company
+
+- Website: https://respondology.com/
+- Products: Moderate (https://respondology.com/moderate/), Respond (https://respondology.com/respond/),
+  Discover (https://respondology.com/discover/)
+- Pricing: https://respondology.com/pricing/ — Moderate from $1,500/mo, Respond from $1,500/mo,
+  Discover from $1,000/mo, billed annually. No self-service signup; a sales call is required.
+- Trust center: https://trust.respondology.com/ (SOC 2, GDPR)
+- Terms: https://respondology.com/terms-of-service
+- Privacy: https://respondology.com/privacy/
+- Support: https://respondology.com/company/contact-us/ — support@respondology.com
+- HQ: 2101 Pearl St., Boulder, CO 80302, USA

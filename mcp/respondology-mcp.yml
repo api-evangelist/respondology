@@ -1,0 +1,72 @@
+generated: '2026-08-26'
+method: derived
+source: derived from openapi/respondology-api-openapi.json after searching for a published server
+status: candidate
+search_note: No official Respondology MCP server exists. Probed https://api.respondology.io/mcp (404)
+  and https://webhooks.respondology.io/ paths; searched npm, PyPI and the github.com/respondology org
+  (0 public repos). Nothing published.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+auth_note: Any future server would carry the X-Api-Key header issued by a Respondology account manager;
+  there is no OAuth surface to delegate to.
+tools:
+- name: submit_comment
+  rest: POST /external_api/v1/comments
+  category: write
+  consequence: moderating
+  description: Submit a comment for moderation and/or analysis.
+  status: candidate
+- name: update_comment
+  rest: PATCH /external_api/v1/comments/{id}
+  category: write
+  status: candidate
+  description: Update a previously submitted comment and re-trigger moderation.
+- name: get_comment_status
+  rest: GET /external_api/v1/comments/{id}
+  category: read
+  status: candidate
+  description: Check the current processing status of a comment.
+- name: delete_comment
+  rest: DELETE /external_api/v1/comments/{id}
+  category: write
+  consequence: destructive
+  status: candidate
+  description: Delete a previously submitted comment.
+- name: submit_post
+  rest: POST /external_api/v1/posts
+  category: write
+  status: candidate
+  description: Submit a post for analysis and recording.
+- name: update_post
+  rest: PATCH /external_api/v1/posts/{id}
+  category: write
+  status: candidate
+  description: Update a previously submitted post.
+- name: get_post_status
+  rest: GET /external_api/v1/posts/{id}
+  category: read
+  status: candidate
+  description: Check the current processing status of a post.
+- name: delete_post
+  rest: DELETE /external_api/v1/posts/{id}
+  category: write
+  consequence: destructive
+  status: candidate
+  description: Delete a previously submitted post.
+- name: list_moderation_reasons
+  rest: GET /moderation_reasons
+  category: read
+  status: candidate
+  description: Retrieve the table of moderation rejection reasons.
+  note: Documented in the contract but returns 404 live at https://api.respondology.io/moderation_reasons
+    — the reason table exists only as a markdown table inside the OpenAPI description.
+agent_notes:
+- 'The API is submit-then-webhook: no tool can return a moderation decision synchronously. An agent must
+  correlate on request_id and wait for a callback, which does not fit a request/response tool contract
+  without a polling loop over the status endpoints.'
+- No idempotency guard exists on either submit tool, so a retried tool call creates a duplicate record.

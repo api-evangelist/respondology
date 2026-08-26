@@ -1,0 +1,84 @@
+generated: '2026-08-26'
+method: derived
+source: https://api.respondology.io/swagger.json plus the SafeBase trust center at https://trust.respondology.com/
+api: respondology-api
+standards:
+- id: openapi
+  name: OpenAPI Specification
+  version: 3.1.0
+  conforms: true
+  evidence: 'openapi: "3.1.0" — parses; 5 paths / 9 operations / 6 webhooks; served at https://api.respondology.io/swagger.json
+    and https://webhooks.respondology.io/swagger.json'
+- id: openapi-webhooks
+  name: OpenAPI 3.1 webhooks object
+  conforms: true
+  evidence: top-level webhooks object with 6 named event definitions
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: 'error responses use application/json with a flat {"error": string} body; no application/problem+json
+    media type anywhere in the contract'
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: no oauth2 securityScheme; authentication is a static X-Api-Key header
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: no openIdConnect scheme; /.well-known/openid-configuration 404s on every host probed
+- id: idempotency
+  name: Idempotency-Key (draft-ietf-httpapi-idempotency-key)
+  conforms: false
+  evidence: no idempotency header or parameter on either POST write operation
+- id: rfc8594
+  name: RFC 8594 Sunset header
+  conforms: false
+  evidence: no Sunset or Deprecation header documented
+- id: rfc9116
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 202 bot-challenge on respondology.com and 404 on webhooks.respondology.io
+- id: pagination
+  name: Collection pagination
+  conforms: false
+  na: true
+  evidence: no collection endpoints exist — not applicable
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: event surface is published as OpenAPI 3.1 webhooks; no AsyncAPI document is served
+domain_standard:
+  searched: true
+  found: false
+  note: Probed the contract for a declared content-moderation / trust-and-safety domain standard and found
+    none. Respondology publishes its own proprietary 38-term moderation-reason vocabulary (vocabulary/respondology-moderation-reasons.yml)
+    rather than mapping to an external scheme.
+  candidates_checked:
+  - standard: DSA transparency database / EU Digital Services Act statement-of-reasons schema
+    present: false
+    note: Moderation decisions return proprietary reason strings, not DSA statement-of-reasons categories.
+  - standard: IAB Content Taxonomy / brand-safety floor (GARM)
+    present: false
+    note: Reason categories overlap GARM brand-safety themes conceptually but no GARM identifiers or mapping
+      appear in the contract.
+  - standard: ActivityPub / ActivityStreams
+    present: false
+    note: not a federated social surface
+  - standard: schema.org Comment / SocialMediaPosting
+    present: false
+    note: inline proprietary shapes; no JSON-LD or schema.org typing
+  reward_only_note: Recorded as an honest absence. Content moderation has no broadly adopted machine-readable
+    interoperability standard, so nothing is invented to fill this slot.
+compliance:
+  trust_center: https://trust.respondology.com/
+  platform: SafeBase
+  certifications:
+  - SOC 2
+  - GDPR
+  documents:
+  - SOC 2 report (access-gated)
+  - Data Processing Agreement
+  - Standard Contractual Clauses
+  source: https://trust.respondology.com/ and https://respondology.com/legal/
+  note: Certification detail beyond SOC 2 and GDPR requires a SafeBase access request; the trust center
+    itself sits behind a Cloudflare challenge for automated clients.

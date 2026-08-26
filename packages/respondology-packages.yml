@@ -1,0 +1,33 @@
+generated: '2026-08-26'
+method: searched
+source: registry.npmjs.org search, pypi.org, rubygems.org, and https://api.github.com/users/respondology/repos
+package_count: 0
+official_sdk_count: 0
+packages: []
+registries_searched:
+- registry: npm
+  query: https://registry.npmjs.org/-/v1/search?text=respondology
+  result: 0 objects
+  version: null
+- registry: pypi
+  query: https://pypi.org/pypi/respondology/json
+  result: 404 Not Found
+  version: null
+- registry: rubygems
+  query: https://rubygems.org/api/v1/search.json?query=respondology
+  result: empty array
+  version: null
+- registry: github
+  query: https://api.github.com/users/respondology/repos
+  result: org exists (id 143194429) with 0 public repositories
+  version: null
+- registry: github-search
+  query: https://api.github.com/search/repositories?q=respondology
+  result: total_count 0
+  version: null
+note: Respondology publishes no first-party client libraries in any public package registry, and its GitHub
+  organization (github.com/respondology) is real but has zero public repositories. Integration is hand-rolled
+  HTTP against the 9 documented operations. No SDKs pointer is emitted because there is no SDK.
+findings:
+- No SDK means no dated release artifact, so this pipeline has no provider-published decay signal for
+  Respondology. The only dated signal available is the single OpenAPI changelog entry (2025-11-18).
