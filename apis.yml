@@ -33,25 +33,154 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- aid: respondology-api
-  name: Respondology API
+- aid: respondology:respondology-comment-results-api
+  name: Respondology Comment Results API
   description: >-
-    The Respondology external API accepts posts and comments for moderation and analysis and returns results
-    asynchronously over customer-configured webhooks. Nine REST operations cover submitting, updating,
-    retrieving, and deleting comments and posts, plus a reference table of moderation rejection reasons. Six
-    OpenAPI 3.1 webhook definitions describe the comment and post result, update, and error callbacks.
-    Authentication is an X-Api-Key header issued during onboarding by a Respondology account manager.
+    Respondology delivers comment moderation and analysis results via webhook. These webhooks provide
+    the
+
+    outcome of moderation decisions along with any recorded analysis data. To configure or update the
+    endpoint
+
+    where result webhooks are sent, contact your [account manager](mailto:support@respondology.com).
+  humanURL: https://respondology.com/product/
+  baseURL: https://webhooks.respondology.io/
+  tags:
+  - Comment Results
+  properties:
+  - type: OpenAPI
+    url: openapi/respondology-comment-results-api-openapi.yml
+  - type: APIReference
+    url: https://api.respondology.io/swagger.json
+  - type: Webhooks
+    url: asyncapi/respondology-webhooks.yml
+  - type: Authentication
+    url: authentication/respondology-authentication.yml
+  - type: ErrorCatalog
+    url: errors/respondology-problem-types.yml
+  - type: DataModel
+    url: data-model/respondology-data-model.yml
+  - type: Conventions
+    url: conventions/respondology-conventions.yml
+  - type: Vocabulary
+    url: vocabulary/respondology-moderation-reasons.yml
+  - type: Conformance
+    url: conformance/respondology-conformance.yml
+- aid: respondology:respondology-comments-api
+  name: Respondology Comments API
+  description: >-
+    Send comments to Respondology for moderation and analysis, update or remove them as needed, and check
+    their
+
+    current processing status.
   humanURL: https://respondology.com/product/
   baseURL: https://webhooks.respondology.io/
   tags:
   - Comments
-  - Posts
-  - Moderation
-  - Webhooks
-  - Content Moderation
   properties:
   - type: OpenAPI
-    url: openapi/respondology-api-openapi.json
+    url: openapi/respondology-comments-api-openapi.yml
+  - type: APIReference
+    url: https://api.respondology.io/swagger.json
+  - type: Webhooks
+    url: asyncapi/respondology-webhooks.yml
+  - type: Authentication
+    url: authentication/respondology-authentication.yml
+  - type: ErrorCatalog
+    url: errors/respondology-problem-types.yml
+  - type: DataModel
+    url: data-model/respondology-data-model.yml
+  - type: Conventions
+    url: conventions/respondology-conventions.yml
+  - type: Vocabulary
+    url: vocabulary/respondology-moderation-reasons.yml
+  - type: Conformance
+    url: conformance/respondology-conformance.yml
+- aid: respondology:respondology-moderation-reasons-api
+  name: Respondology Moderation Reasons API
+  description: >-
+    The following table lists all of the possible moderation rejection reasons
+
+    that may be returned in the `moderation_reasons` array when a comment is rejected, ordered alphabetically.
+
+    If a comment is rejected for multiple reasons, all of them will be included in the `moderation_reasons`
+
+    array.
+
+
+    These reasons match the ones visible in the Moderate UI. The strictness of moderation for many of
+    these
+
+    reasons may be adjusted via your account moderation settings in Moderate. Please contact your account
+
+    manager for assistance if necessary.
+  humanURL: https://respondology.com/product/
+  baseURL: https://webhooks.respondology.io/
+  tags:
+  - Moderation Reasons
+  properties:
+  - type: OpenAPI
+    url: openapi/respondology-moderation-reasons-api-openapi.yml
+  - type: APIReference
+    url: https://api.respondology.io/swagger.json
+  - type: Webhooks
+    url: asyncapi/respondology-webhooks.yml
+  - type: Authentication
+    url: authentication/respondology-authentication.yml
+  - type: ErrorCatalog
+    url: errors/respondology-problem-types.yml
+  - type: DataModel
+    url: data-model/respondology-data-model.yml
+  - type: Conventions
+    url: conventions/respondology-conventions.yml
+  - type: Vocabulary
+    url: vocabulary/respondology-moderation-reasons.yml
+  - type: Conformance
+    url: conformance/respondology-conformance.yml
+- aid: respondology:respondology-post-results-api
+  name: Respondology Post Results API
+  description: >-
+    Respondology delivers post analysis and recording results via webhook. To configure or update the
+    endpoint
+
+    where result webhooks are sent, contact your account manager.
+  humanURL: https://respondology.com/product/
+  baseURL: https://webhooks.respondology.io/
+  tags:
+  - Post Results
+  properties:
+  - type: OpenAPI
+    url: openapi/respondology-post-results-api-openapi.yml
+  - type: APIReference
+    url: https://api.respondology.io/swagger.json
+  - type: Webhooks
+    url: asyncapi/respondology-webhooks.yml
+  - type: Authentication
+    url: authentication/respondology-authentication.yml
+  - type: ErrorCatalog
+    url: errors/respondology-problem-types.yml
+  - type: DataModel
+    url: data-model/respondology-data-model.yml
+  - type: Conventions
+    url: conventions/respondology-conventions.yml
+  - type: Vocabulary
+    url: vocabulary/respondology-moderation-reasons.yml
+  - type: Conformance
+    url: conformance/respondology-conformance.yml
+- aid: respondology:respondology-posts-api
+  name: Respondology Posts API
+  description: >-
+    Submit posts to Respondology for moderation and analysis, update or remove them as needed, and check
+    their
+
+    current processing status.
+  humanURL: https://respondology.com/product/
+  baseURL: https://webhooks.respondology.io/
+  tags:
+  - Posts
+  properties:
+  - type: OpenAPI
+    url: openapi/respondology-posts-api-openapi.yml
   - type: APIReference
     url: https://api.respondology.io/swagger.json
   - type: Webhooks
