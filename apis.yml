@@ -9,6 +9,18 @@ description: >-
   pulls comment data from any public handle for sentiment, theme, and trend analysis. Respondology publishes
   a public OpenAPI 3.1 contract for its external moderation API, letting customers submit posts and comments
   for moderation and analysis and receive results asynchronously over webhooks.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://avatars.githubusercontent.com/u/143194429?v=4
 url: https://raw.githubusercontent.com/api-evangelist/respondology/refs/heads/main/apis.yml
 x-type: company
