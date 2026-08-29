@@ -210,6 +210,9 @@ apis:
   - type: Conformance
     url: conformance/respondology-conformance.yml
 common:
+- type: CapabilityMap
+  url: capabilities/respondology-capability-edges.yml
+  name: Respondology Business Capability Map
 - type: Overlay
   url: overlays/respondology-api-overlay.yaml
 - type: AgentSkill
