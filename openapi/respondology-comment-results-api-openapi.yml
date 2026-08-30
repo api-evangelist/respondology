@@ -1,0 +1,368 @@
+openapi: 3.2.0
+info:
+  title: Welcome to the Respondology Comment Results API
+  version: v1
+  description: "<a href=\"https://www.respondology.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Respondology\n</a> is an AI-powered platform that helps brands moderate, analyze, and activate conversations at\nscale. Our product enables teams to automatically identify and manage spam and brand-damaging comments while\nelevating meaningful audience interactions. Using advanced language and engagement analysis, the platform\nunderstands intent and context to support accurate, brand-safe moderation without relying on rigid rules or\nkeyword lists. Beyond moderation, Respondology delivers real-time analytics that reveal what audiences are\ntalking about, how conversations are evolving, and where engagement opportunities exist. Within seconds,\nbrands can uncover trends, measure sentiment, and gain actionable insight across high-volume comment streams.\nBuilt for fast-moving social and digital teams, Respondology brings moderation, insight, and activation\ntogether in one unified Comment Activation Platform—helping brands protect their presence and turn\nconversations into measurable impact.\n\n## Getting Started\n\nTo begin using Respondology, contact our team to set up your account and receive your API key and secret.\nDuring onboarding, you’ll also configure the endpoint where Respondology will deliver moderation and analysis\nresults. Respondology uses webhooks to send results asynchronously, so there’s no need to keep an open\nconnection while content is being processed. Once setup is complete, you can start submitting posts and\ncomments for moderation and analytics immediately. For fine-tuned control, moderation behavior can be\ncustomized in the\n<a href=\"https://v2.app.respondology.io/moderate\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Moderate\n</a> asset settings panel. Your account manager can also help tailor configurations\nto align with your brand standards and specific use cases. Follow the endpoint guides below to start\nintegrating Respondology into your workflow or download the OpenAPI specification\n[here](swagger.json).\n"
+servers:
+- url: https://webhooks.respondology.io/
+  description: Production API server
+tags:
+- name: Comment Results
+  description: 'Respondology delivers comment moderation and analysis results via webhook. These webhooks provide the
+
+    outcome of moderation decisions along with any recorded analysis data. To configure or update the endpoint
+
+    where result webhooks are sent, contact your [account manager](mailto:support@respondology.com).
+
+    '
+paths: {}
+webhooks:
+  comment_result:
+    post:
+      summary: Comment result webhook
+      description: Payload sent to your endpoint when moderation is completed for a submitted comment, or when the comment has been recorded if moderation is not requested.
+      tags:
+      - Comment Results
+      parameters:
+      - name: X-Hub-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+          example: 74dff3501a7e41a45c6381b7c20fd0ecb84cc54164af9b9c493aadb54d0ca5ca
+        description: 'A SHA-256 HMAC signature of the request body, created using your API key’s secret. You can use this header to verify that the webhook originated from Respondology and that its payload was not tampered with.
+
+          To verify, compute a SHA-256 HMAC using the raw request body in JSON format and the secret. If this matches the signature, the result is authentic.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              - comment_id
+              - account_id
+              - screen_name
+              - message
+              - language
+              - custom
+              - webhook_sending_initiated_at
+              - request_id
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - moderated
+                  - recorded
+                  example: moderated
+                  description: Indicates whether the updated comment was moderated or only recorded for analysis. The moderation related fields below will not be returned if the comment was only recorded.
+                comment_id:
+                  type: string
+                  example: '45305901000853414072'
+                  description: The id of the processed comment. This will match the `comment_id` returned when the comment was submitted.
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: The id of the account the processed comment is associated with.
+                screen_name:
+                  type: string
+                  example: johnsmith
+                  description: The screen name of the creator of the processed comment.
+                message:
+                  type: string
+                  example: This is a comment message.
+                  description: The message of the processed comment.
+                language:
+                  type: string
+                  example: EN
+                  description: The detected language of the processed comment, in ISO 639-2 format. Will return 'UN' for unknown if the language could not be detected.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: The custom field included with the processed comment during submission, for whatever tracking is required by your system.
+                webhook_sending_initiated_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:01:10Z'
+                  description: The time at which sending the result was initiated, in UTC time and ISO 8601 format.
+                request_id:
+                  type: string
+                  example: 2025-10-27-bb6315110cc5477bef57c619
+                  description: A unique id for the request that can be used for tracking and troubleshooting. This will match the `request_id` that was returned when the comment was submitted.
+                moderation_completed_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:01:08Z'
+                  description: The time at which moderation was completed, in UTC time and ISO 8601 format. This field will not be included if the comment was not moderated.
+                moderation_result:
+                  type: string
+                  enum:
+                  - approved
+                  - rejected
+                  example: rejected
+                  description: The moderation result. This field will not be included if the comment was not moderated.
+                moderation_reasons:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - Spam
+                  - Offensive Language
+                  description: An array of moderation reasons for rejected comments, which match the categories visible in Moderate. This field will not be included if the comment was not moderated or was approved. See the [Moderation Reasons](#tag/Moderation-Reasons) section for an explanation of each reason.
+            example:
+              action: moderated
+              comment_id: '45305901000853414072'
+              account_id: '93135838437690541987'
+              screen_name: johnsmith
+              message: This is a comment message.
+              language: EN
+              custom:
+                key: value
+              webhook_sending_initiated_at: '2025-07-14T12:01:10Z'
+              request_id: 2025-10-27-bb6315110cc5477bef57c619
+              moderation_completed_at: '2025-07-14T12:01:08Z'
+              moderation_result: rejected
+              moderation_reasons:
+              - Spam
+              - Offensive Language
+      responses:
+        '200':
+          description: Your server should return a 200 OK result when it successfully processes the webhook. If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+  comment_update_result:
+    post:
+      summary: Comment update result webhook
+      description: Payload sent to your endpoint when moderation is completed for an updated comment, or when the comment update has been recorded if moderation is not requested.
+      tags:
+      - Comment Results
+      parameters:
+      - name: X-Hub-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+          example: 74dff3501a7e41a45c6381b7c20fd0ecb84cc54164af9b9c493aadb54d0ca5ca
+        description: 'A SHA-256 HMAC signature of the request body, created using your API key’s secret. You can use this header to verify that the webhook originated from Respondology and that its payload was not tampered with.
+
+          To verify, compute a SHA-256 HMAC using the raw request body in JSON format and the secret. If this matches the signature, the result is authentic.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              - comment_id
+              - account_id
+              - screen_name
+              - message
+              - language
+              - custom
+              - webhook_sending_initiated_at
+              - request_id
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - moderated
+                  - recorded
+                  example: moderated
+                  description: Indicates whether the updated comment was moderated or only recorded for analysis. The moderation related fields below will not be returned if the comment was only recorded.
+                comment_id:
+                  type: string
+                  example: '45305901000853414072'
+                  description: The id of the updated comment. This will match the `comment_id` submitted with the comment update information.
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: The id of the account the updated comment is associated with.
+                screen_name:
+                  type: string
+                  example: johnsmith
+                  description: The screen name of the creator of the updated comment.
+                message:
+                  type: string
+                  example: This is an updated comment message.
+                  description: The message of the updated comment.
+                language:
+                  type: string
+                  example: EN
+                  description: The detected language of the processed comment, in ISO 639-2 format. Will return 'UN' for unknown if the language could not be detected.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: The custom field included with the updated comment during submission, for whatever tracking is required by your system.
+                webhook_sending_initiated_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-18T13:45:00Z'
+                  description: The time at which sending the result was initiated, in UTC time and ISO 8601 format.
+                request_id:
+                  type: string
+                  example: 2025-10-27-bb6315110cc5477bef57c619
+                  description: A unique id for the request that can be used for tracking and troubleshooting. This will match the `request_id` that was returned when the comment was submitted.
+                moderation_completed_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:01:08Z'
+                  description: The time at which moderation was completed, in UTC time and ISO 8601 format. This field will not be included if the comment was not moderated.
+                moderation_result:
+                  type: string
+                  enum:
+                  - approved
+                  - rejected
+                  example: rejected
+                  description: The moderation result. This field will not be included if the comment was not moderated.
+                moderation_reasons:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - Spam
+                  - Offensive Language
+                  description: An array of moderation reasons for rejected comments, which match the categories visible in Moderate. This field will not be included if the comment was not moderated or was approved. See the [Moderation Reasons](#tag/Moderation-Reasons) section for an explanation of each reason.
+            example:
+              action: moderated
+              comment_id: '45305901000853414072'
+              account_id: '93135838437690541987'
+              screen_name: johnsmith
+              message: This is a comment message.
+              language: EN
+              custom:
+                key: value
+              webhook_sending_initiated_at: '2025-07-14T12:01:10Z'
+              request_id: 2025-10-27-bb6315110cc5477bef57c619
+              moderation_completed_at: '2025-07-14T12:01:08Z'
+              moderation_result: rejected
+              moderation_reasons:
+              - Spam
+              - Offensive Language
+      responses:
+        '200':
+          description: Your server should return a 200 OK result when it successfully processes the webhook. If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+  comment_error_result:
+    post:
+      summary: Comment error result webhook
+      description: Payload sent to your endpoint when an error occurs during processing or moderation for a submitted or updated comment.
+      tags:
+      - Comment Results
+      parameters:
+      - name: X-Hub-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+          example: 74dff3501a7e41a45c6381b7c20fd0ecb84cc54164af9b9c493aadb54d0ca5ca
+        description: 'A SHA-256 HMAC signature of the request body, created using your API key’s secret. You can use this header to verify that the webhook originated from Respondology and that its payload was not tampered with.
+
+          To verify, compute a SHA-256 HMAC using the raw request body in JSON format and the secret. If this matches the signature, the result is authentic.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              - comment_id
+              - account_id
+              - screen_name
+              - message
+              - custom
+              - error
+              - request_id
+              properties:
+                action:
+                  type: string
+                  example: errored
+                  description: Indicates the comment submission or update request has errored.
+                comment_id:
+                  type: string
+                  example: '45305901000853414072'
+                  description: The id of the comment that has caused the error. This will match the `comment_id` returned when the comment was submitted, or the `comment_id` submitted with the comment if it was being updated.
+                account_id:
+                  type: string
+                  example: '93135838437690541988'
+                  description: The id of the account of the comment that has caused the error.
+                screen_name:
+                  type: string
+                  example: johnsmith
+                  description: The screen name of the comment that has caused the error.
+                comment_message:
+                  type: string
+                  example: This is an erroring comment message.
+                  description: The message of the comment that has caused the error.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: The custom field included with the comment during submission, for whatever tracking is required by your system.
+                error:
+                  type: object
+                  required:
+                  - code
+                  - message
+                  - status
+                  description: Detailed information about the error that has occurred.
+                  properties:
+                    message:
+                      type: string
+                      example: Please check your parameters
+                      description: A message regarding the error, with suggested actions.
+                    status:
+                      type: string
+                      example: BAD_REQUEST
+                      description: The error status text.
+                    code:
+                      type: integer
+                      example: 400
+                      description: The error status code.
+                    details:
+                      type: array[string]
+                      example: invalid account_id submitted
+                      description: A list of error details in string array format.
+                request_id:
+                  type: string
+                  example: 2025-10-27-bb6315110cc5477bef57c619
+                  description: A unique id for the request that can be used for tracking and troubleshooting. This will match the `request_id` that was returned when the comment was submitted.
+            example:
+              action: errored
+              comment_id: '45305901000853414072'
+              account_id: '93135838437690541988'
+              screen_name: johnsmith
+              message: This is an erroring comment message.
+              error:
+                message: Please check your parameters
+                status: BAD_REQUEST
+                code: 400
+                details:
+                - invalid account_id submitted
+              request_id: 2025-10-27-bb6315110cc5477bef57c619
+      responses:
+        '200':
+          description: Your server should return a 200 OK result when it successfully processes the webhook. If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+x-tagGroups:
+- name: Comments
+  tags:
+  - Comments
+- name: Comment Results
+  tags:
+  - Comment Results
+- name: Moderation Reasons
+  tags:
+  - Moderation Reasons
+- name: Posts
+  tags:
+  - Posts
+- name: Post Results
+  tags:
+  - Post Results
+- name: Changelog
+  tags:
+  - Changelog

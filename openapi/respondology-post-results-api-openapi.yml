@@ -1,0 +1,317 @@
+openapi: 3.2.0
+info:
+  title: Welcome to the Respondology Post Results API
+  version: v1
+  description: "<a href=\"https://www.respondology.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Respondology\n</a> is an AI-powered platform that helps brands moderate, analyze, and activate conversations at\nscale. Our product enables teams to automatically identify and manage spam and brand-damaging comments while\nelevating meaningful audience interactions. Using advanced language and engagement analysis, the platform\nunderstands intent and context to support accurate, brand-safe moderation without relying on rigid rules or\nkeyword lists. Beyond moderation, Respondology delivers real-time analytics that reveal what audiences are\ntalking about, how conversations are evolving, and where engagement opportunities exist. Within seconds,\nbrands can uncover trends, measure sentiment, and gain actionable insight across high-volume comment streams.\nBuilt for fast-moving social and digital teams, Respondology brings moderation, insight, and activation\ntogether in one unified Comment Activation Platform—helping brands protect their presence and turn\nconversations into measurable impact.\n\n## Getting Started\n\nTo begin using Respondology, contact our team to set up your account and receive your API key and secret.\nDuring onboarding, you’ll also configure the endpoint where Respondology will deliver moderation and analysis\nresults. Respondology uses webhooks to send results asynchronously, so there’s no need to keep an open\nconnection while content is being processed. Once setup is complete, you can start submitting posts and\ncomments for moderation and analytics immediately. For fine-tuned control, moderation behavior can be\ncustomized in the\n<a href=\"https://v2.app.respondology.io/moderate\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Moderate\n</a> asset settings panel. Your account manager can also help tailor configurations\nto align with your brand standards and specific use cases. Follow the endpoint guides below to start\nintegrating Respondology into your workflow or download the OpenAPI specification\n[here](swagger.json).\n"
+servers:
+- url: https://webhooks.respondology.io/
+  description: Production API server
+tags:
+- name: Post Results
+  description: 'Respondology delivers post analysis and recording results via webhook. To configure or update the endpoint
+
+    where result webhooks are sent, contact your account manager.
+
+    '
+paths: {}
+webhooks:
+  post_result:
+    post:
+      summary: Post result webhook
+      description: Payload sent to your endpoint when the post has been recorded.
+      tags:
+      - Post Results
+      parameters:
+      - name: X-Hub-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+          example: 74dff3501a7e41a45c6381b7c20fd0ecb84cc54164af9b9c493aadb54d0ca5ca
+        description: 'A SHA-256 HMAC signature of the request body, created using your API key’s secret. You can use this header to verify that the webhook originated from Respondology and that its payload was not tampered with.
+
+          To verify, compute a SHA-256 HMAC using the raw request body in JSON format and the secret. If this matches the signature, the result is authentic.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              - post_id
+              - account_id
+              - screen_name
+              - title
+              - caption
+              - custom
+              - webhook_sending_initiated_at
+              - request_id
+              properties:
+                action:
+                  type: string
+                  example: recorded
+                  description: Indicates the post has been recorded.
+                post_id:
+                  type: string
+                  example: '82520585537490124386'
+                  description: The id of the processed post. This will match the `post_id` returned when the post was submitted.
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: The id of the account the processed post is associated with.
+                screen_name:
+                  type: string
+                  example: johnsmith
+                  description: The screen name of the creator of the processed post.
+                title:
+                  type: string
+                  example: This is a post title.
+                  description: The title of the created post.
+                caption:
+                  type: string
+                  example: This is a post caption.
+                  description: The caption of the created post.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: The custom field included with the processed post during submission, for whatever tracking is required by your system.
+                webhook_sending_initiated_at:
+                  type: string
+                  format: date_time
+                  description: The time at which sending the result was initiated, in UTC time and ISO 8601 format.
+                request_id:
+                  type: string
+                  example: 2025-10-27-bb6315110cc5477bef57c619
+                  description: A unique id for the request that can be used for tracking and troubleshooting. This will match the `request_id` that was returned when the post was submitted.
+            example:
+              action: recorded
+              post_id: '82520585537490124386'
+              account_id: '93135838437690541987'
+              screen_name: johnsmith
+              title: This is a post title.
+              caption: This is a post caption.
+              custom:
+                key: value
+              webhook_sending_initiated_at: '2025-07-14T12:01:10Z'
+              request_id: 2025-10-27-bb6315110cc5477bef57c619
+      responses:
+        '200':
+          description: Your server should return a 200 OK result when it successfully processes the webhook. If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+  post_update_result:
+    post:
+      summary: Post update result webhook
+      description: Payload sent to your endpoint when the post has been updated.
+      tags:
+      - Post Results
+      parameters:
+      - name: X-Hub-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+          example: 74dff3501a7e41a45c6381b7c20fd0ecb84cc54164af9b9c493aadb54d0ca5ca
+        description: 'A SHA-256 HMAC signature of the request body, created using your API key’s secret. You can use this header to verify that the webhook originated from Respondology and that its payload was not tampered with.
+
+          To verify, compute a SHA-256 HMAC using the raw request body in JSON format and the secret. If this matches the signature, the result is authentic.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              - post_id
+              - account_id
+              - screen_name
+              - title
+              - caption
+              - custom
+              - webhook_sending_initiated_at
+              - request_id
+              properties:
+                action:
+                  type: string
+                  example: recorded
+                  description: Indicates the post update has been recorded.
+                post_id:
+                  type: string
+                  example: '82520585537490124386'
+                  description: The id of the updated post. This will match the `post_id` submitted with the comment update information.
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: The id of the account the updated post is associated with.
+                screen_name:
+                  type: string
+                  example: johnsmith
+                  description: The screen name of the creator of the updated post.
+                title:
+                  type: string
+                  example: This is an updated post title.
+                  description: The title of the updated post.
+                caption:
+                  type: string
+                  example: This is an updated post caption.
+                  description: The caption of the updated post.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: The custom field included with the updated post during submission, for whatever tracking is required by your system.
+                webhook_sending_initiated_at:
+                  type: string
+                  format: date_time
+                  description: The time at which sending the result was initiated, in UTC time and ISO 8601 format.
+                request_id:
+                  type: string
+                  example: 2025-10-27-bb6315110cc5477bef57c619
+                  description: A unique id for the request that can be used for tracking and troubleshooting. This will match the `request_id` that was returned when the post was submitted.
+            example:
+              action: recorded
+              post_id: '82520585537490124386'
+              account_id: '93135838437690541987'
+              screen_name: johnsmith
+              title: This is an updated post title.
+              caption: This is an updated post caption.
+              custom:
+                key: value
+              webhook_sending_initiated_at: '2025-07-14T12:01:10Z'
+              request_id: 2025-10-27-bb6315110cc5477bef57c619
+      responses:
+        '200':
+          description: Your server should return a 200 OK result when it successfully processes the webhook. If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+  post_error_result:
+    post:
+      summary: Post error result webhook
+      description: Payload sent to your endpoint when processing error occurs during processing for a submitted or updated post.
+      tags:
+      - Post Results
+      parameters:
+      - name: X-Hub-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+          example: 74dff3501a7e41a45c6381b7c20fd0ecb84cc54164af9b9c493aadb54d0ca5ca
+        description: 'A SHA-256 HMAC signature of the request body, created using your API key’s secret. You can use this header to verify that the webhook originated from Respondology and that its payload was not tampered with.
+
+          To verify, compute a SHA-256 HMAC using the raw request body in JSON format and the secret. If this matches the signature, the result is authentic.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              - post_id
+              - account_id
+              - screen_name
+              - message
+              - post_title
+              - post_caption
+              - custom
+              - error
+              - request_id
+              properties:
+                action:
+                  type: string
+                  example: errored
+                  description: Indicates the post submission or update request has errored.
+                post_id:
+                  type: string
+                  example: '82520585537490124386'
+                  description: The id of the post that has caused the error. This will match the `post_id` returned when the post was submitted, or the `post_id` submitted with the post if it was being updated.
+                account_id:
+                  type: string
+                  example: '93135838437690541988'
+                  description: The id of the account of the post that has caused the error.
+                screen_name:
+                  type: string
+                  example: johnsmith
+                  description: The screen name of the creator of the post that has caused the error.
+                post_title:
+                  type: string
+                  example: This is an erroring post title.
+                  description: The title of the post that has caused the error.
+                post_caption:
+                  type: string
+                  example: This is an erroring post caption.
+                  description: The caption of the post that has caused the error.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: The custom field included with the post during submission, for whatever tracking is required by your system.
+                error:
+                  type: object
+                  required:
+                  - code
+                  - message
+                  - status
+                  description: Detailed information about the error that has occurred.
+                  properties:
+                    message:
+                      type: string
+                      example: Please check your parameters
+                      description: A message regarding the error, with suggested actions.
+                    status:
+                      type: string
+                      example: BAD_REQUEST
+                      description: The error status text.
+                    code:
+                      type: integer
+                      example: 400
+                      description: The error status code.
+                    details:
+                      type: array[string]
+                      example: invalid account_id submitted
+                      description: A list of error details in string array format.
+                request_id:
+                  type: string
+                  example: 2025-10-27-bb6315110cc5477bef57c619
+                  description: A unique id for the request that can be used for tracking and troubleshooting. This will match the `request_id` that was returned when the post was submitted.
+            example:
+              action: errored
+              post_id: '82520585537490124386'
+              account_id: '93135838437690541988'
+              screen_name: johnsmith
+              post_title: This is an erroring post title.
+              post_caption: This is an erroring post caption.
+              custom:
+                key: value
+              error:
+                message: Please check your parameters
+                status: BAD_REQUEST
+                code: 400
+                details:
+                - invalid account_id submitted
+              request_id: 2025-10-27-bb6315110cc5477bef57c619
+      responses:
+        '200':
+          description: Your server should return a 200 OK result when it successfully processes the webhook. If a 200 OK result is not received, result sending will be retried for 72 hours with exponential backoff.
+x-tagGroups:
+- name: Comments
+  tags:
+  - Comments
+- name: Comment Results
+  tags:
+  - Comment Results
+- name: Moderation Reasons
+  tags:
+  - Moderation Reasons
+- name: Posts
+  tags:
+  - Posts
+- name: Post Results
+  tags:
+  - Post Results
+- name: Changelog
+  tags:
+  - Changelog

@@ -1,0 +1,627 @@
+openapi: 3.2.0
+info:
+  title: Welcome to the Respondology Comments API
+  version: v1
+  description: "<a href=\"https://www.respondology.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Respondology\n</a> is an AI-powered platform that helps brands moderate, analyze, and activate conversations at\nscale. Our product enables teams to automatically identify and manage spam and brand-damaging comments while\nelevating meaningful audience interactions. Using advanced language and engagement analysis, the platform\nunderstands intent and context to support accurate, brand-safe moderation without relying on rigid rules or\nkeyword lists. Beyond moderation, Respondology delivers real-time analytics that reveal what audiences are\ntalking about, how conversations are evolving, and where engagement opportunities exist. Within seconds,\nbrands can uncover trends, measure sentiment, and gain actionable insight across high-volume comment streams.\nBuilt for fast-moving social and digital teams, Respondology brings moderation, insight, and activation\ntogether in one unified Comment Activation Platform—helping brands protect their presence and turn\nconversations into measurable impact.\n\n## Getting Started\n\nTo begin using Respondology, contact our team to set up your account and receive your API key and secret.\nDuring onboarding, you’ll also configure the endpoint where Respondology will deliver moderation and analysis\nresults. Respondology uses webhooks to send results asynchronously, so there’s no need to keep an open\nconnection while content is being processed. Once setup is complete, you can start submitting posts and\ncomments for moderation and analytics immediately. For fine-tuned control, moderation behavior can be\ncustomized in the\n<a href=\"https://v2.app.respondology.io/moderate\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Moderate\n</a> asset settings panel. Your account manager can also help tailor configurations\nto align with your brand standards and specific use cases. Follow the endpoint guides below to start\nintegrating Respondology into your workflow or download the OpenAPI specification\n[here](swagger.json).\n"
+servers:
+- url: https://webhooks.respondology.io/
+  description: Production API server
+tags:
+- name: Comments
+  description: 'Send comments to Respondology for moderation and analysis, update or remove them as needed, and check their
+
+    current processing status.
+
+    '
+paths:
+  /external_api/v1/comments:
+    post:
+      summary: Submit a comment for moderation or analysis
+      tags:
+      - Comments
+      description: 'Submit a new comment to Respondology for moderation and/or analysis. If moderation is enabled, results are
+
+        delivered asynchronously via webhook using the format defined in the
+
+        [Comment Result Webhook](#tag/Comment-Results/paths/comment_result/post).
+
+        Webhook endpoints can be configured or updated by contacting your account manager.
+
+
+        Quota cost: 1
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      responses:
+        '200':
+          description: comment submission accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment_id:
+                    type: string
+                    example: '45305901000853414072'
+                    description: The id of the comment that will be created from the submission. This id should be stored for future reference.
+                  account_id:
+                    type: string
+                    example: '93135838437690541987'
+                    description: The id of the account the submitted comment is associated with.
+                  screen_name:
+                    type: string
+                    example: johnsmith
+                    description: The screen name of the creator of the submitted comment.
+                  message:
+                    type: string
+                    example: This is a comment message.
+                    description: The message of the submitted comment.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - comment_id
+                - account_id
+                - screen_name
+                - message
+                - request_id
+        '400':
+          description: missing required parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'param is missing or the value is empty: account_id'
+                example:
+                  error: 'param is missing or the value is empty: account_id'
+                required:
+                - error
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - account_id
+              - message
+              properties:
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: Identifies the account the comment should be associated with. Account ids are obtained from your account manager during account setup.
+                message:
+                  type: string
+                  example: This is a comment message.
+                  description: The comment message.
+                moderate:
+                  type: boolean
+                  example: true
+                  default: false
+                  description: Whether the comment should be moderated. Enter either `true` or `false`. Defaults to `false` if omitted. Both moderated and unmoderated comments will appear in Discover for analysis if you have purchased a Discover package.
+                posted_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:00:00Z'
+                  description: The time at which the comment was posted, in UTC time and ISO 8601 format. If omitted, the current time will be used by default.
+                post_id:
+                  type: string
+                  example: '82520585537490124386'
+                  description: The id of the post the comment should be associated with. Post ids are obtained by creating a post via sending a POST request to the [external_api/v1/posts](#tag/Posts/paths/~1external_api~1v1~1posts/post) endpoint. If omitted, the comment will not be associated with a post.
+                post_created_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-13T18:00:00Z'
+                  description: The time at which the post the comment is associated with was created, in UTC time and ISO 8601 format. May be used to detect rapid replies immediately following post creation that indicate bot activity, if desired.
+                parent_comment_id:
+                  type: string
+                  example: 03552159572427062345
+                  description: The id of the parent comment of replies. Parent comment ids are obtained by creating the parent comment first via a POST request to the [external_api/v1/comments](#tag/Comments/paths/~1external_api~1v1~1comments/post) endpoint. If omitted, it will be assumed the comment is a top-level comment rather than a reply.
+                comment_permalink:
+                  type: string
+                  example: https://www.example.com/comments/abc
+                  description: A permanent link to the comment (or its post, if an individual comment link is not available.)
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: A string or hash to be included with the comment result webhook, for any tracking required by your system.
+                media:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                  example:
+                  - https://cdn.example.com/media/image_1.jpg
+                  - https://cdn.example.com/media/image_2.gif
+                  description: Links to any images and gifs posted as comments (or parts of comments) for analysis and display on Respondology platforms. Image and gif moderation requires Moderate Plus or higher.
+                message_tags:
+                  type: array
+                  items:
+                    type: hashes
+                    properties:
+                      start:
+                        type: integer
+                        example: 0
+                      length:
+                        type: integer
+                        example: 10
+                      content:
+                        type: string
+                        example: '@johnsmith'
+                  example:
+                  - start: 0
+                    length: 10
+                    content: '@johnsmith'
+                  - start: 20
+                    length: 12
+                    content: '@janesmith_tag'
+                  description: Tags that identify mentions, hashtags, or other entities in the comment message. Enhances moderation results by providing additional context.
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: user_123
+                      description: 'The id of the commenting user on your site. Required along with Moderate Plus for user profile analysis. '
+                    screen_name:
+                      type: string
+                      example: johnsmith
+                      description: The unique screen_name of the commenting user on your site. This field is used for automatically approving comments by allowlisted users, as well as blocking users with numerous rejected comments if desired.
+                    display_name:
+                      type: string
+                      example: John Smith
+                      description: The display name of the commenting user on your site.
+                    avatar_url:
+                      type: string
+                      example: https://www.example.com/avatar.jpg
+                      description: 'A link to the commenting user''s avatar on your site. Required along with Moderate Plus for user profile analysis. '
+                    owner:
+                      type: boolean
+                      example: false
+                      description: Whether the commenting user is the owner of the site or account where the comment is being posted. Owner comments are automatically approved and marked distinctly in Moderate, and filtered out of summarization and sentiment analysis in Discover.
+                    bio:
+                      type: string
+                      example: This is my bio.
+                      description: The biography field of the commenting user's profile on your site.
+                    created_at:
+                      type: string
+                      format: date_time
+                      example: '2021-01-01T00:00:00Z'
+                      description: The time at which the commenting user was created on your site, in UTC time and ISO 8601 format.
+                    profile_link:
+                      type: string
+                      example: https://www.social.com/johnsmith
+                      description: An external link that is in the commenting user's profile on your site.
+                    additional_data:
+                      type: array
+                      items:
+                        type: hashes
+                      additionalProperties: true
+                      example:
+                        key: value
+                      description: Any additional information about the commenting user, in string or hash format.
+  /external_api/v1/comments/{id}:
+    patch:
+      summary: Update a previously submitted comment
+      tags:
+      - Comments
+      description: 'Update information about an existing comment and re-moderate it if desired. Moderation results are returned
+
+        asynchronously via webhook, following the format described in
+
+        [Comment update result webhook](#tag/Comment-Results/paths/comment_update_result/post).
+
+        Contact your account manager to update the endpoint to which results should
+
+        be sent.
+
+
+        Quota cost: 1
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: '45305901000853414072'
+        description: Identifies the comment to update. The comment id is obtained from the response when initially creating the comment.
+      responses:
+        '200':
+          description: comment update accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment_id:
+                    type: string
+                    example: '45305901000853414072'
+                    description: The id of the updated comment.
+                  account_id:
+                    type: string
+                    example: '93135838437690541987'
+                    description: The id of the account the updated comment is associated with.
+                  screen_name:
+                    type: string
+                    example: johnsmith
+                    description: The screen name of the creator of the updated comment.
+                  message:
+                    type: string
+                    example: This is an updated comment message.
+                    description: The message of the updated comment.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - comment_id
+                - account_id
+                - screen_name
+                - message
+                - request_id
+        '400':
+          description: missing required parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'param is missing or the value is empty: account_id'
+                example:
+                  error: 'param is missing or the value is empty: account_id'
+                required:
+                - error
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - account_id
+              - message
+              properties:
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: Identifies the account the comment is associated with. Account ids are obtained from your account manager during account setup.
+                message:
+                  type: string
+                  example: This is an updated comment message.
+                  description: The comment message.
+                moderate:
+                  type: string
+                  example: true
+                  default: false
+                  description: Whether the comment should be moderated. Enter either `true` or `false`. Defaults to false if omitted. Both moderated and unmoderated comments will appear in Discover for analysis if you have purchased a Discover package.
+                posted_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:00:00Z'
+                  description: The time at which the comment was posted, in UTC time and ISO 8601 format. If omitted, the current time will be used by default.
+                post_id:
+                  type: string
+                  example: '82520585537490124386'
+                  description: The id of the post the comment should be associated with. Post ids are obtained by creating a post via sending a POST request to the [external_api/v1/posts](#tag/Posts/paths/~1external_api~1v1~1posts/post) endpoint. If omitted, the comment will not be associated with a post.
+                post_created_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-13T18:00:00Z'
+                  description: The time at which the post the comment is associated with was created, in UTC time and ISO 8601 format. May be used to detect rapid replies immediately following post creation that indicate bot activity, if desired.
+                parent_comment_id:
+                  type: string
+                  example: 03552159572427062345
+                  description: The id of the parent comment of replies. Parent comment ids are obtained by creating the parent comment first via a POST request to the [external_api/v1/comments](#tag/Comments/paths/~1external_api~1v1~1comments/post) endpoint. If omitted, it will be assumed the comment is a top-level comment rather than a reply.
+                comment_permalink:
+                  type: string
+                  example: https://www.example.com/comments/abc
+                  description: A permanent link to the comment (or its post, if an individual comment link is not available.)
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: A string or hash to be included with the comment result, for whatever tracking is required by your system.
+                media:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                  example:
+                  - https://cdn.example.com/media/image_1.jpg
+                  - https://cdn.example.com/media/image_2.gif
+                  description: Links to any images and gifs posted as comments (or parts of comments) for analysis and display on Respondology platforms. Image and gif moderation requires Moderate Plus or higher.
+                message_tags:
+                  type: array
+                  items:
+                    type: hashes
+                    properties:
+                      start:
+                        type: integer
+                        example: 0
+                      length:
+                        type: integer
+                        example: 10
+                      content:
+                        type: string
+                        example: '@johnsmith'
+                  example:
+                  - start: 0
+                    length: 10
+                    content: '@johnsmith'
+                  - start: 20
+                    length: 12
+                    content: '@janesmith_tag'
+                  description: Tags that identify mentions, hashtags, or other entities in the comment message. Enhances moderation results by providing additional context.
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: user_123
+                      description: 'The id of the commenting user on your site. Required along with Moderate Plus for user profile analysis. '
+                    screen_name:
+                      type: string
+                      example: johnsmith
+                      description: The unique screen name of the commenting user on your site. This field is used for automatically approving comments by allowlisted users, as well as blocking users with numerous rejected comments if desired.
+                    display_name:
+                      type: string
+                      example: John Smith
+                      description: The display name of the commenting user on your site.
+                    avatar_url:
+                      type: string
+                      example: https://www.example.com/avatar.jpg
+                      description: 'A link to the commenting user''s avatar on your site. Required along with Moderate Plus for user profile analysis. '
+                    owner:
+                      type: boolean
+                      example: false
+                      description: Whether the commenting user is the owner of the site or account where the comment is being posted. Owner comments are automatically approved and marked distinctly in Moderate, and filtered out of summarization and sentiment analysis in Discover.
+                    bio:
+                      type: string
+                      example: This is my bio.
+                      description: The biography field of the commenting user's profile on your site.
+                    created_at:
+                      type: string
+                      format: date_time
+                      example: '2021-01-01T00:00:00Z'
+                      description: The time at which the commenting user was created on your site, in UTC time and ISO 8601 format.
+                    profile_link:
+                      type: string
+                      example: https://www.social.com/johnsmith
+                      description: An external link that is in the commenting user's profile on your site.
+                    additional_data:
+                      type: array
+                      items:
+                        type: hashes
+                      additionalProperties: true
+                      example:
+                        key: value
+                      description: Any additional information about the commenting user, in string or hash format.
+    get:
+      summary: Check the current status of a comment
+      tags:
+      - Comments
+      description: 'Return basic information about a comment. This endpoint may be used to confirm the current status of comment
+
+        creation, update, and deletion requests.
+
+
+        Quota cost: 0
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: '45305901000853414072'
+        description: Identifies the comment to check. The comment id is obtained from the response when initially creating the comment.
+      responses:
+        '200':
+          description: comment retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment_id:
+                    type: string
+                    example: '45305901000853414072'
+                    description: The id of the checked comment.
+                  account_id:
+                    type: string
+                    example: '93135838437690541987'
+                    description: The id of the account of the checked comment.
+                  screen_name:
+                    type: string
+                    example: johnsmith
+                    description: The screen name of the creator of the checked comment.
+                  message:
+                    type: string
+                    example: This is a comment message.
+                    description: The message of the checked comment.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - comment_id
+                - account_id
+                - screen_name
+                - message
+                - request_id
+        '404':
+          description: comment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: comment not found
+                example:
+                  error: comment not found
+                required:
+                - error
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+    delete:
+      summary: Delete a previously submitted comment
+      tags:
+      - Comments
+      description: 'Accepts a deletion request for a previously submitted comment.
+
+
+        Deletion requests are processed asynchronously. It may take several moments for the change to propagate.
+
+        To confirm completion, query the
+
+        [GET /external_api/v1/comments/{id}](#tag/Comments/paths/~1external_api~1v1~1comments~1%7Bid%7D/get)
+
+        endpoint.
+
+
+        Quota cost: 0
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: '45305901000853414072'
+        description: Identifies the comment to delete. The comment id is obtained from the response when initially creating the comment.
+      responses:
+        '202':
+          description: comment delete accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment_id:
+                    type: string
+                    example: '45305901000853414072'
+                    description: The id of the comment that is being processed for deletion.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - comment_id
+                - request_id
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+x-tagGroups:
+- name: Comments
+  tags:
+  - Comments
+- name: Comment Results
+  tags:
+  - Comment Results
+- name: Moderation Reasons
+  tags:
+  - Moderation Reasons
+- name: Posts
+  tags:
+  - Posts
+- name: Post Results
+  tags:
+  - Post Results
+- name: Changelog
+  tags:
+  - Changelog

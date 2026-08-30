@@ -1,0 +1,568 @@
+openapi: 3.2.0
+info:
+  title: Welcome to the Respondology Posts API
+  version: v1
+  description: "<a href=\"https://www.respondology.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Respondology\n</a> is an AI-powered platform that helps brands moderate, analyze, and activate conversations at\nscale. Our product enables teams to automatically identify and manage spam and brand-damaging comments while\nelevating meaningful audience interactions. Using advanced language and engagement analysis, the platform\nunderstands intent and context to support accurate, brand-safe moderation without relying on rigid rules or\nkeyword lists. Beyond moderation, Respondology delivers real-time analytics that reveal what audiences are\ntalking about, how conversations are evolving, and where engagement opportunities exist. Within seconds,\nbrands can uncover trends, measure sentiment, and gain actionable insight across high-volume comment streams.\nBuilt for fast-moving social and digital teams, Respondology brings moderation, insight, and activation\ntogether in one unified Comment Activation Platform—helping brands protect their presence and turn\nconversations into measurable impact.\n\n## Getting Started\n\nTo begin using Respondology, contact our team to set up your account and receive your API key and secret.\nDuring onboarding, you’ll also configure the endpoint where Respondology will deliver moderation and analysis\nresults. Respondology uses webhooks to send results asynchronously, so there’s no need to keep an open\nconnection while content is being processed. Once setup is complete, you can start submitting posts and\ncomments for moderation and analytics immediately. For fine-tuned control, moderation behavior can be\ncustomized in the\n<a href=\"https://v2.app.respondology.io/moderate\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Moderate\n</a> asset settings panel. Your account manager can also help tailor configurations\nto align with your brand standards and specific use cases. Follow the endpoint guides below to start\nintegrating Respondology into your workflow or download the OpenAPI specification\n[here](swagger.json).\n"
+servers:
+- url: https://webhooks.respondology.io/
+  description: Production API server
+tags:
+- name: Posts
+  description: 'Submit posts to Respondology for moderation and analysis, update or remove them as needed, and check their
+
+    current processing status.
+
+    '
+paths:
+  /external_api/v1/posts:
+    post:
+      summary: Submit a post for moderation or analysis
+      tags:
+      - Posts
+      description: 'Submit a new post to be used to aggregate comments for analysis and for context during moderation (if desired).
+
+        Post creation confirmations are sent asynchronously via webhook, following the format described in
+
+        [Post result webhook](#tag/Post-Results/paths/post_result/post). Contact your account manager to update the
+
+        endpoint to which results should be sent.
+
+
+        Quota cost: 1
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      responses:
+        '200':
+          description: post submission accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  post_id:
+                    type: string
+                    example: '82520585537490124386'
+                    description: The id of the post that will be created from the submission. This id should be stored for future reference, and included when submitting comments associated with the post.
+                  account_id:
+                    type: string
+                    example: '93135838437690541987'
+                    description: The id of the account the submitted post is associated with.
+                  screen_name:
+                    type: string
+                    example: johnsmith
+                    description: The screen name of the posting user.
+                  title:
+                    type: string
+                    example: This is a post title.
+                    description: The title of the submitted post.
+                  caption:
+                    type: string
+                    example: This is a post caption.
+                    description: The caption of the submitted post.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - post_id
+                - account_id
+                - screen_name
+                - title
+                - caption
+                - request_id
+        '400':
+          description: missing required parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'param is missing or the value is empty: account_id'
+                example:
+                  error: 'param is missing or the value is empty: account_id'
+                required:
+                - error
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - account_id
+              - caption
+              properties:
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: Identifies the account the post should be associated with. Account ids are obtained from your account manager during account setup.
+                caption:
+                  type: string
+                  example: This is a post caption.
+                  description: The caption of the post.
+                title:
+                  type: string
+                  example: This is a post title.
+                  description: The title of the post. If the post only has one text field, use the `caption` field instead.
+                posted_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:00:00Z'
+                  description: The time at which the post was created, in UTC time and ISO 8601 format. If omitted, the current time will be used by default.
+                post_permalink:
+                  type: string
+                  example: https://www.example.com/posts/abc
+                  description: A permanent link to the post.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: A string or hash to be included with the post creation result, for whatever tracking is required by your system.
+                media:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                  example:
+                  - https://cdn.example.com/media/image_1.jpg
+                  - https://cdn.example.com/media/image_2.gif
+                  description: Links to any images and gifs displayed on the post. If more than one image is submitted, the first image will be displayed on Respondology platforms. However, all images will be used to enhance contextual analysis and moderation of comments.
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: user_789
+                      description: The id of the posting user on your site.
+                    screen_name:
+                      type: string
+                      example: johnsmith
+                      description: The unique screen name of the posting user on your site.
+                    display_name:
+                      type: string
+                      example: John Smith
+                      description: The display name of the posting user on your site.
+                    avatar_url:
+                      type: string
+                      example: https://www.example.com/avatar.jpg
+                      description: A link to the posting user's avatar on your site.
+                    owner:
+                      type: boolean
+                      example: false
+                      description: Whether the posting user is the owner of the site or account where the post was created.
+                    bio:
+                      type: string
+                      example: This is my bio.
+                      description: The biography field of the posting user's profile on your site.
+                    created_at:
+                      type: string
+                      format: date_time
+                      example: '2021-01-01T00:00:00Z'
+                      description: The time at which the posting user was created on your site, in UTC time and ISO 8601 format.
+                    profile_link:
+                      type: string
+                      example: https://www.social.com/johnsmith
+                      description: An external link that is in the user's profile on your site.
+                    additional_data:
+                      type: array
+                      items:
+                        type: hashes
+                      additionalProperties: true
+                      example:
+                        key: value
+                      description: Any additional information about the user, in string or hash format.
+  /external_api/v1/posts/{id}:
+    patch:
+      summary: Update a previously submitted post
+      tags:
+      - Posts
+      description: 'Update information about an existing post. Confirmation is returned asynchronously via webhook, following the
+
+        format described in
+
+        [Post update result webhook](#tag/Post-Results/paths/post_update_result/post). Contact
+
+        your account manager to update the endpoint to which results should be sent.
+
+
+        Quota cost: 1
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: '45305901000853414072'
+        description: Identifies the post to update. The post id is obtained from the response when initially creating the post.
+      responses:
+        '200':
+          description: post update accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  post_id:
+                    type: string
+                    example: '82520585537490124386'
+                    description: The id of the updated post.
+                  account_id:
+                    type: string
+                    example: '93135838437690541987'
+                    description: The id of the account the updated post is associated with.
+                  screen_name:
+                    type: string
+                    example: johnsmith
+                    description: The screen name of the posting user.
+                  title:
+                    type: string
+                    example: This is an updated post title.
+                    description: The title of the updated post.
+                  caption:
+                    type: string
+                    example: This is an updated post caption.
+                    description: The caption of the updated post.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - post_id
+                - account_id
+                - screen_name
+                - title
+                - caption
+                - request_id
+        '400':
+          description: missing required parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'param is missing or the value is empty: account_id'
+                example:
+                  error: 'param is missing or the value is empty: account_id'
+                required:
+                - error
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - account_id
+              - caption
+              properties:
+                account_id:
+                  type: string
+                  example: '93135838437690541987'
+                  description: Identifies the account the post is associated with. Account ids are obtained from your account manager during account setup.
+                caption:
+                  type: string
+                  example: This is a updated post caption.
+                  description: The caption of the post.
+                title:
+                  type: string
+                  example: This is a updated post title.
+                  description: The title of the post. If the post only has one text field, use the `caption` field instead.
+                posted_at:
+                  type: string
+                  format: date_time
+                  example: '2025-07-14T12:00:00Z'
+                  description: The time at which the post was created, in UTC time and ISO 8601 format. If omitted, the current time will be used by default.
+                post_permalink:
+                  type: string
+                  example: https://www.example.com/posts/abc
+                  description: A permanent link to the post.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  example:
+                    key: value
+                  description: A string or hash to be included with the post submission result, for whatever tracking is required by your system.
+                media:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                  example:
+                  - https://cdn.example.com/media/image_1.jpg
+                  - https://cdn.example.com/media/image_2.gif
+                  description: Links to any images and gifs displayed on the post. If more than one image is submitted, the first image will be displayed on Respondology platforms. However, all images will be used to enhance contextual analysis and moderation of comments.
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: user_789
+                      description: The id of the posting user on your site.
+                    screen_name:
+                      type: string
+                      example: johnsmith
+                      description: The unique screen name of the posting user on your site.
+                    display_name:
+                      type: string
+                      example: John Smith
+                      description: The display name of the posting user on your site.
+                    avatar_url:
+                      type: string
+                      example: https://www.example.com/avatar.jpg
+                      description: A link to the posting user's avatar on your site.
+                    owner:
+                      type: boolean
+                      example: false
+                      description: Whether the posting user is the owner of the site or account where the post was created.
+                    bio:
+                      type: string
+                      example: This is my bio.
+                      description: The biography field of the posting user's profile on your site.
+                    created_at:
+                      type: string
+                      format: date_time
+                      example: '2021-01-01T00:00:00Z'
+                      description: The time at which the posting user was created on your site, in UTC time and ISO 8601 format.
+                    profile_link:
+                      type: string
+                      example: https://www.social.com/johnsmith
+                      description: An external link that is in the user's profile on your site.
+                    additional_data:
+                      type: array
+                      items:
+                        type: hashes
+                      additionalProperties: true
+                      example:
+                        key: value
+                      description: Any additional information about the user, in string or hash format.
+    get:
+      summary: Check the current status of a post
+      tags:
+      - Posts
+      description: 'Return basic information about a post. This endpoint may be used to confirm the current status of post
+
+        creation, update, and deletion requests.
+
+
+        Quota cost: 0
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: '82520585537490124386'
+        description: Identifies the post to check. The post id is obtained from the response when initially creating the post.
+      responses:
+        '200':
+          description: post retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment_id:
+                    type: string
+                    example: '82520585537490124386'
+                    description: The id of the checked post.
+                  account_id:
+                    type: string
+                    example: '93135838437690541987'
+                    description: The id of the account of the checked post.
+                  screen_name:
+                    type: string
+                    example: johnsmith
+                    description: The screen name of the creator of the checked post.
+                  title:
+                    type: string
+                    example: This is a post title.
+                    description: The title of the checked post.
+                  caption:
+                    type: string
+                    example: This is a post caption.
+                    description: The caption of the checked post.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - post_id
+                - account_id
+                - screen_name
+                - title
+                - caption
+                - request_id
+        '404':
+          description: post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: post not found
+                example:
+                  error: post not found
+                required:
+                - error
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+    delete:
+      summary: Delete a previously submitted post
+      tags:
+      - Posts
+      description: 'Accepts a deletion request for a previously submitted post.
+
+
+        Deletion requests are processed asynchronously. It may take several moments for the change to propagate.
+
+        To confirm completion, query the
+
+        [GET /external_api/v1/posts/{id}](#tag/Posts/paths/~1external_api~1v1~1posts~1%7Bid%7D/get)
+
+        endpoint.
+
+
+        Quota cost: 0
+
+        '
+      parameters:
+      - name: X-Api-Key
+        in: header
+        required: true
+        schema:
+          type: string
+        description: The API key to use when processing the request. API keys are obtained from your account manager during account setup.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: '82520585537490124386'
+        description: Identifies the post to delete. The post id is obtained from the response when initially creating the post.
+      responses:
+        '202':
+          description: post delete accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  post_id:
+                    type: string
+                    example: '82520585537490124386'
+                    description: The id of the post that is being processed for deletion.
+                  request_id:
+                    type: string
+                    example: 2025-10-27-bb6315110cc5477bef57c619
+                    description: A unique id for the request that can be used for tracking and troubleshooting. It is recommended to store this id for future reference.
+                required:
+                - post_id
+                - request_id
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: API key not found
+                example:
+                  error: API key not found
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+x-tagGroups:
+- name: Comments
+  tags:
+  - Comments
+- name: Comment Results
+  tags:
+  - Comment Results
+- name: Moderation Reasons
+  tags:
+  - Moderation Reasons
+- name: Posts
+  tags:
+  - Posts
+- name: Post Results
+  tags:
+  - Post Results
+- name: Changelog
+  tags:
+  - Changelog
