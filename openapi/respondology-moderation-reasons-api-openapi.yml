@@ -2,7 +2,11 @@ openapi: 3.2.0
 info:
   title: Welcome to the Respondology Moderation Reasons API
   version: v1
-  description: "<a href=\"https://www.respondology.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Respondology\n</a> is an AI-powered platform that helps brands moderate, analyze, and activate conversations at\nscale. Our product enables teams to automatically identify and manage spam and brand-damaging comments while\nelevating meaningful audience interactions. Using advanced language and engagement analysis, the platform\nunderstands intent and context to support accurate, brand-safe moderation without relying on rigid rules or\nkeyword lists. Beyond moderation, Respondology delivers real-time analytics that reveal what audiences are\ntalking about, how conversations are evolving, and where engagement opportunities exist. Within seconds,\nbrands can uncover trends, measure sentiment, and gain actionable insight across high-volume comment streams.\nBuilt for fast-moving social and digital teams, Respondology brings moderation, insight, and activation\ntogether in one unified Comment Activation Platform—helping brands protect their presence and turn\nconversations into measurable impact.\n\n## Getting Started\n\nTo begin using Respondology, contact our team to set up your account and receive your API key and secret.\nDuring onboarding, you’ll also configure the endpoint where Respondology will deliver moderation and analysis\nresults. Respondology uses webhooks to send results asynchronously, so there’s no need to keep an open\nconnection while content is being processed. Once setup is complete, you can start submitting posts and\ncomments for moderation and analytics immediately. For fine-tuned control, moderation behavior can be\ncustomized in the\n<a href=\"https://v2.app.respondology.io/moderate\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Moderate\n</a> asset settings panel. Your account manager can also help tailor configurations\nto align with your brand standards and specific use cases. Follow the endpoint guides below to start\nintegrating Respondology into your workflow or download the OpenAPI specification\n[here](swagger.json).\n"
+  description: 'Respondology
+
+    is an AI-powered platform that helps brands moderate, analyze, and activate conversations at
+
+    scale.'
 servers:
 - url: https://webhooks.respondology.io/
   description: Production API server
@@ -10,20 +14,7 @@ tags:
 - name: Moderation Reasons
   description: 'The following table lists all of the possible moderation rejection reasons
 
-    that may be returned in the `moderation_reasons` array when a comment is rejected, ordered alphabetically.
-
-    If a comment is rejected for multiple reasons, all of them will be included in the `moderation_reasons`
-
-    array.
-
-
-    These reasons match the ones visible in the Moderate UI. The strictness of moderation for many of these
-
-    reasons may be adjusted via your account moderation settings in Moderate. Please contact your account
-
-    manager for assistance if necessary.
-
-    '
+    that may be returned in the `moderation_reasons` array when a comment is rejected, ordered alphabetically.'
 paths:
   /moderation_reasons:
     get:
@@ -108,9 +99,9 @@ paths:
 
         | **Trending Topics** | The comment contains references to trending topics. |
 
-        | **Website App Link Issues/Outages** | The comment is mentioning an outage of a website or app. |
-
-        '
+        | **Website App Link Issues/Outages** | The comment is mentioning an outage of a website or app. |'
+      operationId: getModerationReasons
+      x-operation-id-source: derived
 x-tagGroups:
 - name: Comments
   tags:

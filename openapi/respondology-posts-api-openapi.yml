@@ -2,7 +2,11 @@ openapi: 3.2.0
 info:
   title: Welcome to the Respondology Posts API
   version: v1
-  description: "<a href=\"https://www.respondology.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Respondology\n</a> is an AI-powered platform that helps brands moderate, analyze, and activate conversations at\nscale. Our product enables teams to automatically identify and manage spam and brand-damaging comments while\nelevating meaningful audience interactions. Using advanced language and engagement analysis, the platform\nunderstands intent and context to support accurate, brand-safe moderation without relying on rigid rules or\nkeyword lists. Beyond moderation, Respondology delivers real-time analytics that reveal what audiences are\ntalking about, how conversations are evolving, and where engagement opportunities exist. Within seconds,\nbrands can uncover trends, measure sentiment, and gain actionable insight across high-volume comment streams.\nBuilt for fast-moving social and digital teams, Respondology brings moderation, insight, and activation\ntogether in one unified Comment Activation Platform—helping brands protect their presence and turn\nconversations into measurable impact.\n\n## Getting Started\n\nTo begin using Respondology, contact our team to set up your account and receive your API key and secret.\nDuring onboarding, you’ll also configure the endpoint where Respondology will deliver moderation and analysis\nresults. Respondology uses webhooks to send results asynchronously, so there’s no need to keep an open\nconnection while content is being processed. Once setup is complete, you can start submitting posts and\ncomments for moderation and analytics immediately. For fine-tuned control, moderation behavior can be\ncustomized in the\n<a href=\"https://v2.app.respondology.io/moderate\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Moderate\n</a> asset settings panel. Your account manager can also help tailor configurations\nto align with your brand standards and specific use cases. Follow the endpoint guides below to start\nintegrating Respondology into your workflow or download the OpenAPI specification\n[here](swagger.json).\n"
+  description: 'Respondology
+
+    is an AI-powered platform that helps brands moderate, analyze, and activate conversations at
+
+    scale.'
 servers:
 - url: https://webhooks.respondology.io/
   description: Production API server
@@ -10,9 +14,7 @@ tags:
 - name: Posts
   description: 'Submit posts to Respondology for moderation and analysis, update or remove them as needed, and check their
 
-    current processing status.
-
-    '
+    current processing status.'
 paths:
   /external_api/v1/posts:
     post:
@@ -23,14 +25,12 @@ paths:
 
         Post creation confirmations are sent asynchronously via webhook, following the format described in
 
-        [Post result webhook](#tag/Post-Results/paths/post_result/post). Contact your account manager to update the
+        Post result webhook. Contact your account manager to update the
 
         endpoint to which results should be sent.
 
 
-        Quota cost: 1
-
-        '
+        Quota cost: 1'
       parameters:
       - name: X-Api-Key
         in: header
@@ -194,6 +194,8 @@ paths:
                       example:
                         key: value
                       description: Any additional information about the user, in string or hash format.
+      operationId: postExternalApiV1Posts
+      x-operation-id-source: derived
   /external_api/v1/posts/{id}:
     patch:
       summary: Update a previously submitted post
@@ -203,14 +205,12 @@ paths:
 
         format described in
 
-        [Post update result webhook](#tag/Post-Results/paths/post_update_result/post). Contact
+        Post update result webhook. Contact
 
         your account manager to update the endpoint to which results should be sent.
 
 
-        Quota cost: 1
-
-        '
+        Quota cost: 1'
       parameters:
       - name: X-Api-Key
         in: header
@@ -381,6 +381,8 @@ paths:
                       example:
                         key: value
                       description: Any additional information about the user, in string or hash format.
+      operationId: patchExternalApiV1PostsById
+      x-operation-id-source: derived
     get:
       summary: Check the current status of a post
       tags:
@@ -390,9 +392,7 @@ paths:
         creation, update, and deletion requests.
 
 
-        Quota cost: 0
-
-        '
+        Quota cost: 0'
       parameters:
       - name: X-Api-Key
         in: header
@@ -474,6 +474,8 @@ paths:
                   error: API key not found
                 required:
                 - error
+      operationId: getExternalApiV1PostsById
+      x-operation-id-source: derived
     delete:
       summary: Delete a previously submitted post
       tags:
@@ -485,14 +487,12 @@ paths:
 
         To confirm completion, query the
 
-        [GET /external_api/v1/posts/{id}](#tag/Posts/paths/~1external_api~1v1~1posts~1%7Bid%7D/get)
+        GET /external_api/v1/posts/{id}
 
         endpoint.
 
 
-        Quota cost: 0
-
-        '
+        Quota cost: 0'
       parameters:
       - name: X-Api-Key
         in: header
@@ -547,6 +547,8 @@ paths:
               type: object
               required:
               - id
+      operationId: deleteExternalApiV1PostsById
+      x-operation-id-source: derived
 x-tagGroups:
 - name: Comments
   tags:
