@@ -46,7 +46,7 @@ modified: '2026-08-26'
 tags:
 - Company
 - Content Moderation
-- Social-Media
+- Social Media
 - Comment Moderation
 - Trust and Safety
 - Artificial Intelligence
@@ -65,6 +65,7 @@ tags_raw:
 - Social Listening
 - Webhooks
 - Marketing
+- Social-Media
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
