@@ -1,0 +1,12 @@
+{
+ "url": "https://api.respondology.io/swagger.json",
+ "requested_url": "https://api.respondology.io/swagger.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 106541,
+ "sha256": "c6cc325c5c17ed5149486c1c26e05e8f4dee1280bd3199f186779e62d8985208",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
