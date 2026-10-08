@@ -56,3 +56,31 @@ findings:
 - Entry price is published and unusually transparent for this category, but every limit attached to a
   tier (asset counts, comment volume, API call ceilings) is quoted rather than published, so a buyer cannot
   size the cost of an API integration from public information.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units: []
+  plans:
+  - name: Moderate
+    access: other
+    model: hybrid
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Respond
+    access: other
+    model: hybrid
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Discover
+    access: other
+    model: hybrid
+    model_how: derived
+    units: []
+    periods:
+    - month
