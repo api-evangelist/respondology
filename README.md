@@ -64,5 +64,128 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Respondology is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Respondology is a Boulder, Colorado social media Comment Activation Platform that helps brands moderate, analyze, and activate the conversations happening in their comment sections. Its three products share one platform: Moderate hides brand-damaging, spam, and toxic comments in under a second using keyphrase and business rules, generative AI, and human moderators across 100+ languages; Respond centralizes paid and organic social comments into a unified inbox and uses AI agents to reply in the brand voice; and Discover pulls comment data from any public handle for sentiment, theme, and trend analysis. Respondology publishes a public OpenAPI 3.1 contract for its external moderation API, letting customers submit posts and comments for moderation and analysis and receive results asynchronously over webhooks.
+
+**Areas:** Company · Content Moderation · Social Media · Comment Moderation · Trust and Safety · Artificial Intelligence · Brand Protection · Social Listening · Webhook · Marketing
+
+## Respondology on APIs.io
+
+Everything profiled for Respondology is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/respondology/](https://apis.io/providers/respondology/)** — or go straight to one of the APIs or properties below.
+
+### APIs (5)
+
+- [Respondology Comment Results API](https://apis.io/apis/respondology/respondology-comment-results-api/) — Respondology delivers comment moderation and analysis results via webhook. These webhooks provide the outcome of moderation decisions along with any…
+- [Respondology Comments API](https://apis.io/apis/respondology/respondology-comments-api/) — Send comments to Respondology for moderation and analysis, update or remove them as needed, and check their current processing status.
+- [Respondology Moderation Reasons API](https://apis.io/apis/respondology/respondology-moderation-reasons-api/) — The following table lists all of the possible moderation rejection reasons that may be returned in the `moderation_reasons` array when a comment is…
+- [Respondology Post Results API](https://apis.io/apis/respondology/respondology-post-results-api/) — Respondology delivers post analysis and recording results via webhook. To configure or update the endpoint where result webhooks are sent, contact your…
+- [Respondology Posts API](https://apis.io/apis/respondology/respondology-posts-api/) — Submit posts to Respondology for moderation and analysis, update or remove them as needed, and check their current processing status.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Respondology Webhooks](https://apis.io/asyncapis/respondology/respondology-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [respondology-mcp.yml](https://apis.io/servers/respondology/respondology-mcp-yml/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Respondology Api Overlay](https://apis.io/overlays/respondology/respondology-api-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Respondology Authentication](https://apis.io/security/respondology/respondology-authentication/)
+- [Respondology Domain Security](https://apis.io/security/respondology/respondology-domain-security/)
+- [Respondology Trust Center](https://apis.io/security/respondology/respondology-trust-center/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Respondology Plans Pricing](https://apis.io/plans/respondology/respondology-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Respondology Rate Limits](https://apis.io/rate-limits/respondology/respondology-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://respondology.com/)
+- [Pricing](https://respondology.com/pricing/)
+- [Support](https://respondology.com/company/contact-us/)
+- [Blog](https://respondology.com/blog/)
+- [Compliance](https://trust.respondology.com/)
+- [Terms of service](https://respondology.com/terms-of-service)
+- [Privacy policy](https://respondology.com/privacy/)
+- [GitHub](https://github.com/respondology)
+
+## API Evangelist rating
+
+**Kin Score 40.5** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 55.1 |
+| Contract governance | 8.3 |
+| Operational transparency | 26.3 |
+| Developer ergonomics | 20.8 |
+| Access clarity | 53.9 |
+
+**Agent readiness 30.8** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 20.0** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/respondology/](https://apis.io/providers/respondology/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Respondology: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/respondology/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
